@@ -7,25 +7,25 @@
 <style>
   :root {
     color-scheme: light;
-    --accent: #8a7d4f;
-    --accent-light: #B2AC88;
-    --accent-dim: rgba(138,125,79,0.10);
-    --accent-border: rgba(138,125,79,0.28);
-    --text: #0f0e0c;
-    --text2: #2a2820;
-    --muted: rgba(20,18,12,0.60);
-    --card: rgba(255,255,255,0.84);
-    --card-border: rgba(0,0,0,0.08);
-    --card-shadow: 0 2px 24px rgba(0,0,0,0.10);
+    --accent: #4A8FA0;
+    --accent-light: #7BB8C4;
+    --accent-dim: rgba(74,143,160,0.09);
+    --accent-border: rgba(74,143,160,0.25);
+    --text: #0e1618;
+    --text2: #1c2c30;
+    --muted: rgba(14,22,26,0.58);
+    --card: rgba(246,251,254,0.88);
+    --card-border: rgba(74,143,160,0.14);
+    --card-shadow: 0 2px 24px rgba(74,143,160,0.10);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { width: 100%; height: 100%; overflow: hidden; color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f0ede8; }
+  html, body { width: 100%; height: 100%; overflow: hidden; color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #edf4f7; }
 
   #bg-video { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center center; z-index: 0; opacity: 0.75; }
-  #bg-overlay { position: fixed; inset: 0; z-index: 1; background: rgba(252,250,246,0.58); }
+  #bg-overlay { position: fixed; inset: 0; z-index: 1; background: rgba(232,246,252,0.42); }
   #app { display: flex; flex-direction: column; height: 100vh; position: relative; z-index: 2; }
 
-  nav { display: flex; align-items: center; justify-content: space-between; padding: 0 28px; height: 52px; flex-shrink: 0; border-bottom: 1px solid rgba(0,0,0,0.07); background: rgba(255,255,255,0.82); backdrop-filter: blur(20px); z-index: 10; }
+  nav { display: flex; align-items: center; justify-content: space-between; padding: 0 28px; height: 52px; flex-shrink: 0; border-bottom: 1px solid rgba(0,0,0,0.07); background: rgba(243,251,255,0.84); backdrop-filter: blur(20px); z-index: 10; }
   .nav-brand { display: flex; align-items: center; gap: 14px; }
   .nav-logo { font-size: 13px; font-weight: 700; letter-spacing: 0.06em; color: var(--accent); text-transform: uppercase; }
   .nav-sep { width: 1px; height: 18px; background: rgba(0,0,0,0.12); }
@@ -78,8 +78,8 @@
   /* CONTRAST CARD (for paradigm shift) */
   .contrast-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; width: 100%; max-width: 860px; margin-top: 6px; }
   .contrast-card { border-radius: 14px; padding: 22px; backdrop-filter: blur(20px); box-shadow: var(--card-shadow); }
-  .contrast-card.old { background: rgba(240,238,234,0.75); border: 1px solid rgba(0,0,0,0.08); }
-  .contrast-card.new { background: rgba(255,255,255,0.90); border: 1px solid var(--accent-border); }
+  .contrast-card.old { background: rgba(228,238,242,0.75); border: 1px solid rgba(0,0,0,0.08); }
+  .contrast-card.new { background: rgba(246,252,255,0.92); border: 1px solid var(--accent-border); }
   .contrast-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 12px; }
   .contrast-label.old { color: rgba(20,18,12,0.35); }
   .contrast-label.new { color: var(--accent); }
@@ -109,7 +109,7 @@
   .arch-layer-num { font-size: 10px; font-weight: 700; color: var(--accent); width: 22px; flex-shrink: 0; }
   .arch-layer-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.11em; color: var(--accent); width: 120px; flex-shrink: 0; }
   .arch-layer-desc { font-size: 13px; color: var(--muted); flex: 1; }
-  .arch-layer-tech { font-size: 11px; color: rgba(138,125,79,0.65); text-align: right; flex-shrink: 0; font-family: 'SF Mono', Menlo, monospace; }
+  .arch-layer-tech { font-size: 11px; color: rgba(74,143,160,0.65); text-align: right; flex-shrink: 0; font-family: 'SF Mono', Menlo, monospace; }
   .arch-layer.live .arch-layer-num { color: #4a9e4a; }
   .arch-layer.live .arch-layer-tag { color: #4a9e4a; }
   .badge { font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.1em; margin-left: 8px; background: rgba(74,158,74,0.12); color: #3a8a3a; border: 1px solid rgba(74,158,74,0.3); }
@@ -151,7 +151,7 @@
 
   /* CTA BUTTONS */
   .cta-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 22px; }
-  .btn-primary { padding: 13px 26px; background: var(--accent); color: #fff; border-radius: 10px; font-weight: 700; font-size: 14px; letter-spacing: 0.04em; cursor: pointer; box-shadow: 0 2px 14px rgba(138,125,79,0.28); }
+  .btn-primary { padding: 13px 26px; background: var(--accent); color: #fff; border-radius: 10px; font-weight: 700; font-size: 14px; letter-spacing: 0.04em; cursor: pointer; box-shadow: 0 2px 14px rgba(74,143,160,0.28); }
   .btn-secondary { padding: 13px 26px; border: 1px solid var(--accent-border); color: var(--accent); border-radius: 10px; font-size: 14px; background: var(--card); backdrop-filter: blur(12px); cursor: pointer; box-shadow: var(--card-shadow); }
 
   #progress { position: fixed; bottom: 0; left: 0; right: 0; height: 2px; background: rgba(0,0,0,0.07); z-index: 20; }
