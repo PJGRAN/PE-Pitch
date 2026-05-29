@@ -667,15 +667,22 @@
     gsap.set(view, { opacity: 0 });
     archStageEl.appendChild(view);
 
+    // Call animate() immediately so GSAP pre-sets all elements to their
+    // from-state (opacity:0, transforms) before the view becomes visible.
+    // This eliminates the flash of the completed layout during cross-fade.
+    animate();
+
     if (archActiveView) {
       const old = archActiveView;
-      gsap.to(old, { opacity: 0, duration: 0.38, ease: 'power2.in',
-        onComplete: () => { if (archStageEl.contains(old)) archStageEl.removeChild(old); }
+      gsap.to(old, { opacity: 0, duration: 0.28, ease: 'power2.in',
+        onComplete: () => {
+          if (archStageEl.contains(old)) archStageEl.removeChild(old);
+          gsap.to(view, { opacity: 1, duration: 0.22, ease: 'power2.out' });
+        }
       });
+    } else {
+      gsap.to(view, { opacity: 1, duration: 0.28, ease: 'power2.out' });
     }
-
-    gsap.to(view, { opacity: 1, duration: 0.38, ease: 'power2.out' });
-    gsap.delayedCall(0.2, () => animate());
 
     archActiveView = view;
     archCur = idx;
