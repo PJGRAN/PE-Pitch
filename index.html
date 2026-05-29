@@ -63,12 +63,10 @@
   .slide::-webkit-scrollbar { width: 4px; }
   .slide::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 2px; }
 
-  /* Slide 4: grid so label is auto height and arch-wrap fills the rest */
+  /* Slide 4: flex column, label shrinks to content, arch-wrap fills remainder */
   .slide-arch {
-    display: grid;
-    grid-template-rows: auto 1fr;
-    row-gap: 8px;
-    align-items: start;
+    justify-content: flex-start;
+    align-items: stretch;
     overflow: hidden;
   }
 
@@ -144,8 +142,9 @@
 
   /* ── Architecture animation styles (inlined, no iframe) ─── */
   .arch-wrap {
+    flex: 1; min-height: 0; width: 100%;
     display: flex; flex-direction: column;
-    overflow: hidden; min-height: 0;
+    overflow: hidden;
     user-select: none;
   }
   .arch-prog { height: 2px; background: rgba(62,111,163,0.09); flex-shrink: 0; }
