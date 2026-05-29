@@ -66,8 +66,8 @@
   }
   .slide::-webkit-scrollbar { width: 4px; }
   .slide::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 2px; }
-  /* Slide 4 override: stretch children, start from top */
-  .slide-arch { align-items: stretch; justify-content: flex-start; }
+  /* Slide 4 override: stretch children, start from top, no scroll */
+  .slide-arch { align-items: stretch; justify-content: flex-start; overflow: hidden; }
 
   /* ── Typography: 3 sizes · 2 weights (300 display, 600 label) ── */
   .label { font-size: 11px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
@@ -266,7 +266,7 @@
         <div class="label anim" style="flex-shrink:0;margin-bottom:8px;">The Platform</div>
         <iframe
           src="architecture_animation_light.html"
-          style="flex:1;min-height:0;width:100%;border:none;border-radius:var(--radius);background:rgba(252,248,244,0.92);box-shadow:var(--card-shadow);"
+          style="flex:1;min-height:0;width:100%;border:none;outline:none;border-radius:var(--radius);background:rgba(252,248,244,0.92);box-shadow:var(--card-shadow);"
           title="Platform Architecture"
         ></iframe>
       </div>
