@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Capgemini Invent – PE Platform</title>
+<style>
+  :root {
+    --accent: #3E6FA3;
+    --accent-light: #7AAFD4;
+    --accent-dim: rgba(62,111,163,0.09);
+    --accent-border: rgba(62,111,163,0.24);
+    --text: #14100c;
+    --text2: #2a2016;
+    --muted: rgba(20,16,12,0.58);
+    --card: rgba(252,248,244,0.88);
+    --card-border: rgba(62,111,163,0.13);
+    --card-shadow: 0 2px 24px rgba(62,111,163,0.09);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; overflow: hidden; color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f2ede7; }
+
+  #bg-video { position: fixed; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center center; z-index: 0; opacity: 0.75; }
+  #bg-overlay { position: fixed; inset: 0; z-index: 1; background: rgba(248,244,238,0.45); }
+  #app { display: flex; flex-direction: column; height: 100vh; position: relative; z-index: 2; }
+
+  nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px; height: 52px; flex-shrink: 0;
+    border-bottom: 1px solid rgba(0,0,0,0.07);
+    background: rgba(252,248,244,0.86); backdrop-filter: blur(20px); z-index: 10;
+  }
+  .nav-brand { display: flex; align-items: center; gap: 14px; }
+  .nav-sep { width: 1px; height: 18px; background: rgba(0,0,0,0.12); }
+  .nav-sub { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+  .nav-dots { display: flex; gap: 8px; align-items: center; }
+  .nav-dot { width: 7px; height: 7px; border-radius: 50%; cursor: pointer; background: rgba(0,0,0,0.15); transition: all 0.25s; border: none; outline: none; }
+  .nav-dot.active { background: var(--accent); transform: scale(1.3); }
+  .nav-arrows { display: flex; gap: 6px; }
+  .nav-arrow {
+    width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
+    background: rgba(255,255,255,0.8); border: 1px solid var(--card-border);
+    color: var(--muted); font-size: 14px; display: flex; align-items: center;
+    justify-content: center; transition: all 0.2s; user-select: none;
+  }
+  .nav-arrow:hover { background: var(--accent-dim); color: var(--accent); border-color: var(--accent-border); }
+
+  #slides-wrap { flex: 1; overflow: hidden; position: relative; }
+  .slide {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; padding: 28px 60px;
+    opacity: 0; pointer-events: none; transform: translateX(40px);
+    transition: opacity 0.4s cubic-bezier(.4,0,.2,1), transform 0.4s cubic-bezier(.4,0,.2,1);
+    overflow-y: auto;
+  }
+  .slide.active { opacity: 1; pointer-events: all; transform: translateX(0); }
+  .slide.exit { opacity: 0; transform: translateX(-40px); }
+  .slide::-webkit-scrollbar { width: 4px; }
+  .slide::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.15); border-radius: 2px; }
+
+  /* TYPOGRAPHY */
+  .label { font-size: 10px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+  h1 { font-size: clamp(26px, 3.6vw, 48px); font-weight: 300; line-height: 1.12; letter-spacing: -0.02em; }
+  h1 strong { font-weight: 700; }
+  h2 { font-size: clamp(20px, 2.4vw, 32px); font-weight: 300; line-height: 1.2; letter-spacing: -0.02em; }
+  h2 strong { font-weight: 700; }
+  .sub { font-size: clamp(13px, 1.3vw, 15px); color: var(--muted); font-weight: 300; margin-top: 12px; max-width: 600px; line-height: 1.7; }
+  .divider { width: 40px; height: 2px; background: var(--accent-light); border-radius: 2px; margin: 16px 0; }
+
+  .sc { display: flex; flex-direction: column; align-items: flex-start; width: 100%; max-width: 860px; }
+  .sc.center { align-items: center; text-align: center; }
+
+  /* CARD */
+  .card { background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; padding: 18px 20px; backdrop-filter: blur(20px); box-shadow: var(--card-shadow); }
+  .card-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); margin-bottom: 7px; }
+  .card-body { font-size: 13px; color: var(--muted); line-height: 1.65; }
+  .card-body strong { color: var(--text2); font-weight: 600; }
+
+  .grid-3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; width: 100%; max-width: 860px; }
+
+  /* STATS */
+  .stats-row { display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; justify-content: center; }
+  .stat { text-align: center; padding: 14px 20px; background: var(--card); border: 1px solid var(--card-border); border-radius: 12px; backdrop-filter: blur(16px); box-shadow: var(--card-shadow); min-width: 100px; }
+  .stat-num { font-size: clamp(22px, 2.8vw, 36px); font-weight: 200; color: var(--accent); letter-spacing: -0.03em; }
+  .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; margin-top: 3px; }
+
+  /* CONTRAST */
+  .contrast-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 860px; margin-top: 6px; }
+  .contrast-card { border-radius: 14px; padding: 18px 20px; backdrop-filter: blur(20px); box-shadow: var(--card-shadow); }
+  .contrast-card.old { background: rgba(238,233,226,0.75); border: 1px solid rgba(0,0,0,0.08); }
+  .contrast-card.new { background: rgba(252,248,244,0.92); border: 1px solid var(--accent-border); }
+  .contrast-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 10px; }
+  .contrast-label.old { color: rgba(20,18,12,0.35); }
+  .contrast-label.new { color: var(--accent); }
+  .contrast-item { display: flex; align-items: flex-start; gap: 9px; margin-bottom: 8px; }
+  .contrast-item:last-child { margin-bottom: 0; }
+  .contrast-dot { width: 5px; height: 5px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+  .contrast-dot.old { background: rgba(20,18,12,0.2); }
+  .contrast-dot.new { background: var(--accent); }
+  .contrast-text { font-size: 12.5px; line-height: 1.5; }
+  .contrast-text.old { color: rgba(20,18,12,0.42); }
+  .contrast-text.new { color: var(--text2); font-weight: 500; }
+
+  /* METHOD FLOW */
+  .method-flow { display: flex; align-items: stretch; width: 100%; max-width: 820px; margin-top: 14px; }
+  .method-step { flex: 1; padding: 20px 16px; text-align: center; background: var(--card); border: 1px solid var(--card-border); border-radius: 14px; backdrop-filter: blur(20px); box-shadow: var(--card-shadow); position: relative; }
+  .method-step:not(:last-child)::after { content: '→'; position: absolute; right: -18px; top: 50%; transform: translateY(-50%); font-size: 15px; color: var(--accent); z-index: 2; }
+  .method-step + .method-step { margin-left: 30px; }
+  .method-num { font-size: 10px; font-weight: 700; color: var(--accent); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+  .method-icon { font-size: 24px; margin-bottom: 8px; }
+  .method-name { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+  .method-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  /* CTA / PROOF */
+  .proof-rows { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 760px; }
+  .proof-row { display: flex; gap: 16px; align-items: flex-start; padding: 16px 18px; background: var(--card); backdrop-filter: blur(20px); border: 1px solid var(--card-border); border-radius: 12px; box-shadow: var(--card-shadow); }
+  .proof-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+  .proof-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .proof-body { font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .proof-body strong { color: var(--text2); font-weight: 600; }
+
+  .cta-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+  .btn-primary { padding: 13px 26px; background: var(--accent); color: #fff; border-radius: 10px; font-weight: 700; font-size: 14px; letter-spacing: 0.03em; cursor: pointer; box-shadow: 0 2px 14px rgba(62,111,163,0.28); border: none; font-family: inherit; }
+  .btn-primary:hover { background: #335f8f; }
+  .btn-secondary { padding: 13px 26px; border: 1px solid var(--accent-border); color: var(--accent); border-radius: 10px; font-size: 14px; background: var(--card); backdrop-filter: blur(12px); cursor: pointer; box-shadow: var(--card-shadow); font-family: inherit; }
+
+  /* PROGRESS */
+  #progress { position: fixed; bottom: 0; left: 0; right: 0; height: 2px; background: rgba(0,0,0,0.07); z-index: 20; }
+  #progress-fill { height: 100%; background: var(--accent); transition: width 0.4s; }
+  .slide-counter { position: fixed; bottom: 12px; right: 20px; font-size: 11px; color: var(--muted); z-index: 20; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  .slide.active .anim { animation: fadeUp 0.45s cubic-bezier(.4,0,.2,1) both; }
+  .slide.active .anim:nth-child(1) { animation-delay: 0.04s; }
+  .slide.active .anim:nth-child(2) { animation-delay: 0.10s; }
+  .slide.active .anim:nth-child(3) { animation-delay: 0.17s; }
+  .slide.active .anim:nth-child(4) { animation-delay: 0.24s; }
+  .slide.active .anim:nth-child(5) { animation-delay: 0.31s; }
+  .slide.active .anim:nth-child(6) { animation-delay: 0.38s; }
+
+  /* ROOT CAUSE BLOCK */
+  .root-cause {
+    margin-top: 16px;
+    padding: 16px 20px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    backdrop-filter: blur(20px);
+    box-shadow: var(--card-shadow);
+    max-width: 860px;
+    width: 100%;
+  }
+
+  /* SLIDE 4 ARCH iframe */
+  .arch-frame-wrap {
+    width: 100%;
+    max-width: 900px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+</style>
+</head>
+<body>
+  <video id="bg-video" autoplay muted loop playsinline>
+    <source src="bg_video.mp4" type="video/mp4">
+  </video>
+  <div id="bg-overlay"></div>
+  <div id="app">
+    <nav>
+      <div class="nav-brand">
+        <img src="capgemini-logo.png" alt="Capgemini Invent" style="height:26px;mix-blend-mode:multiply;">
+        <div class="nav-sep"></div>
+        <div class="nav-sub">PE Platform</div>
+      </div>
+      <div class="nav-dots" id="dots"></div>
+      <div class="nav-arrows">
+        <div class="nav-arrow" id="prev">←</div>
+        <div class="nav-arrow" id="next">→</div>
+      </div>
+    </nav>
+
+    <div id="slides-wrap">
+
+      <!-- 1. OPENER -->
+      <div class="slide active" data-index="0">
+        <div class="sc center">
+          <img src="capgemini-logo.png" alt="Capgemini Invent" class="anim" style="height:44px;mix-blend-mode:multiply;margin-bottom:16px;" onerror="this.style.display='none'">
+          <div class="label anim">Private Equity Platform</div>
+          <h1 class="anim">One platform per portfolio company.<br><strong>Live in 90 days. Operated by Capgemini.</strong></h1>
+          <div class="divider anim" style="margin:16px auto;"></div>
+          <p class="sub anim" style="text-align:center;">
+            We replace the fragmented systems of record in your portfolio companies with a single, AI-native platform — giving you real-time visibility across every holding, from acquisition to exit.
+          </p>
+          <div class="stats-row anim">
+            <div class="stat"><div class="stat-num">90</div><div class="stat-label">Days to go live</div></div>
+            <div class="stat"><div class="stat-num">1</div><div class="stat-label">Platform per company</div></div>
+            <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Portfolio visibility</div></div>
+            <div class="stat"><div class="stat-num">0</div><div class="stat-label">Excel reports required</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. PROBLEM STATEMENT -->
+      <div class="slide" data-index="1">
+        <div class="sc">
+          <div class="label anim">The Situation</div>
+          <h2 class="anim">Every portfolio company is running on<br><strong>5 to 12 disconnected systems of record.</strong></h2>
+          <div class="divider anim"></div>
+          <div class="grid-3 anim">
+            <div class="card">
+              <div class="card-title">Acquisition cost</div>
+              <div class="card-body">Every acquisition loses <strong>3 to 6 months</strong> to data archaeology — manually extracting, cleaning, and reconciling data across ERP, CRM, and spreadsheets before a single insight is possible.</div>
+            </div>
+            <div class="card">
+              <div class="card-title">Hold period cost</div>
+              <div class="card-body">Portfolio reporting relies on <strong>quarterly Excel exports</strong> that are already outdated when they arrive. Value creation decisions are based on data that is weeks old.</div>
+            </div>
+            <div class="card">
+              <div class="card-title">Exit cost</div>
+              <div class="card-body">Buyers discount companies with fragmented data. <strong>Months of pre-exit data cleanup</strong> reduce the time available to grow the business and compress the achievable multiple.</div>
+            </div>
+          </div>
+          <div class="root-cause anim">
+            <p style="font-size:14px;color:var(--muted);line-height:1.7;">The root cause is not a lack of tools. It is the architecture: <strong style="color:var(--text2);">multiple systems of record that were never designed to share a common data model.</strong> Adding another integration layer does not solve this. It compounds it.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. APPROACH -->
+      <div class="slide" data-index="2">
+        <div class="sc center">
+          <div class="label anim">Our Approach</div>
+          <h2 class="anim">We don't integrate existing systems.<br><strong>We replace them.</strong></h2>
+          <div class="contrast-grid anim" style="text-align:left;">
+            <div class="contrast-card old">
+              <div class="contrast-label old">Conventional approach</div>
+              <div class="contrast-item"><div class="contrast-dot old"></div><div class="contrast-text old">Connect SAP, Salesforce, and Excel via middleware</div></div>
+              <div class="contrast-item"><div class="contrast-dot old"></div><div class="contrast-text old">Each system retains its own data model and definitions</div></div>
+              <div class="contrast-item"><div class="contrast-dot old"></div><div class="contrast-text old">Every new acquisition requires a new integration project</div></div>
+              <div class="contrast-item"><div class="contrast-dot old"></div><div class="contrast-text old">Complexity compounds with each portfolio addition</div></div>
+            </div>
+            <div class="contrast-card new">
+              <div class="contrast-label new">Capgemini approach</div>
+              <div class="contrast-item"><div class="contrast-dot new"></div><div class="contrast-text new">One application replaces the fragmented stack per company</div></div>
+              <div class="contrast-item"><div class="contrast-dot new"></div><div class="contrast-text new">Single data model — every KPI defined once, consistently</div></div>
+              <div class="contrast-item"><div class="contrast-dot new"></div><div class="contrast-text new">Each new acquisition uses the same playbook — no custom build</div></div>
+              <div class="contrast-item"><div class="contrast-dot new"></div><div class="contrast-text new">Complexity decreases with each portfolio addition</div></div>
+            </div>
+          </div>
+          <div class="method-flow anim">
+            <div class="method-step">
+              <div class="method-icon">🎯</div>
+              <div class="method-num">Step 01</div>
+              <div class="method-name">Problem</div>
+              <div class="method-desc">Every operational problem is decomposed into a structured tree. No technology decision is made until the problem is precisely defined.</div>
+            </div>
+            <div class="method-step">
+              <div class="method-icon">⚙️</div>
+              <div class="method-num">Step 02</div>
+              <div class="method-name">Workflow</div>
+              <div class="method-desc">The process is defined — steps, decisions, handoffs, data flows. This becomes the specification for what the platform must do.</div>
+            </div>
+            <div class="method-step">
+              <div class="method-icon">🤖</div>
+              <div class="method-num">Step 03</div>
+              <div class="method-name">Resource</div>
+              <div class="method-desc">Human, software, or AI is assigned to each step based on fit — not on availability or habit. Legacy systems are replaced only where the workflow is fully mapped.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. ARCHITECTURE -->
+      <div class="slide" data-index="3">
+        <div style="width:100%;height:100%;display:flex;flex-direction:column;max-width:900px;">
+          <div class="label anim" style="margin-bottom:8px;flex-shrink:0;">The Platform</div>
+          <iframe
+            src="architecture_animation_light.html"
+            style="flex:1;width:100%;border:none;border-radius:14px;background:#F5F6F8;box-shadow:0 2px 24px rgba(62,111,163,0.09);"
+            title="Platform Architecture"
+          ></iframe>
+        </div>
+      </div>
+
+      <!-- 5. CALL TO ACTION -->
+      <div class="slide" data-index="4">
+        <div class="sc center">
+          <div class="label anim">Next Step</div>
+          <h2 class="anim">We built it. We operate it.<br><strong>We are accountable for it.</strong></h2>
+          <div class="divider anim" style="margin:16px auto;"></div>
+          <div class="proof-rows anim">
+            <div class="proof-row">
+              <div class="proof-icon">🏗️</div>
+              <div>
+                <div class="proof-title">Not a proposal — a working platform</div>
+                <div class="proof-body">The platform exists and is operational. Capgemini Invent built every layer — from the data model to the AI integration. <strong>There is no implementation risk from unproven technology.</strong></div>
+              </div>
+            </div>
+            <div class="proof-row">
+              <div class="proof-icon">🎯</div>
+              <div>
+                <div class="proof-title">One engagement covers your entire portfolio</div>
+                <div class="proof-body">A single contract with your firm activates the platform for every current and future portfolio company. <strong>The same playbook, the same data model, the same Capgemini team</strong> — no ramp-up from scratch on each acquisition.</div>
+              </div>
+            </div>
+            <div class="proof-row">
+              <div class="proof-icon">📋</div>
+              <div>
+                <div class="proof-title">Transformation at C-suite scale</div>
+                <div class="proof-body">Capgemini Invent has delivered operational transformation programs for global organizations including Roche and Beyond Gravity. <strong>We understand what executive-level rollout requires.</strong></div>
+              </div>
+            </div>
+          </div>
+          <div class="cta-row anim">
+            <button class="btn-primary">Request a live demonstration →</button>
+            <button class="btn-secondary">Schedule a senior partner conversation</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /slides-wrap -->
+
+    <div id="progress"><div id="progress-fill"></div></div>
+    <div class="slide-counter" id="counter">1 / 5</div>
+  </div><!-- /app -->
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const dotsEl = document.getElementById('dots');
+  const total = slides.length;
+  let current = 0, animating = false;
+
+  slides.forEach((_, i) => {
+    const d = document.createElement('button');
+    d.className = 'nav-dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(d);
+  });
+
+  function goTo(idx) {
+    if (idx === current || animating) return;
+    animating = true;
+    slides[current].classList.remove('active');
+    slides[current].classList.add('exit');
+    const prev = current;
+    setTimeout(() => {
+      slides[prev].classList.remove('exit');
+      current = idx;
+      slides[current].classList.add('active');
+      updateUI();
+      setTimeout(() => { animating = false; }, 420);
+    }, 380);
+  }
+
+  function updateUI() {
+    dotsEl.querySelectorAll('.nav-dot').forEach((d, i) => d.classList.toggle('active', i === current));
+    document.getElementById('counter').textContent = (current + 1) + ' / ' + total;
+    document.getElementById('progress-fill').style.width = ((current + 1) / total * 100) + '%';
+  }
+
+  document.getElementById('prev').addEventListener('click', () => goTo(Math.max(0, current - 1)));
+  document.getElementById('next').addEventListener('click', () => goTo(Math.min(total - 1, current + 1)));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(Math.min(total - 1, current + 1));
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') goTo(Math.max(0, current - 1));
+  });
+
+  let tx = 0;
+  document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  document.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 50) goTo(dx < 0 ? Math.min(total - 1, current + 1) : Math.max(0, current - 1));
+  });
+
+  updateUI();
+</script>
+</body>
+</html>

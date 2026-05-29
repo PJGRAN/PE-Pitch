@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Platform Architecture</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: #F5F6F8;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #1A1A2E;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  user-select: none;
+}
+
+.top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 24px 6px;
+  flex-shrink: 0;
+}
+.phase-title-main {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1B5E6E;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.phase-counter {
+  font-size: 11px;
+  color: #9CA3AF;
+}
+
+.main-area {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  gap: 14px;
+  padding: 0 24px;
+  overflow: hidden;
+  min-height: 0;
+  transition: all 0.5s cubic-bezier(.4,0,.2,1);
+}
+
+/* STACK */
+.stack {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  min-height: 0;
+}
+
+.layer {
+  display: flex;
+  align-items: stretch;
+  border: 1px solid #DDE1E7;
+  border-radius: 8px;
+  background: #FFFFFF;
+  overflow: hidden;
+  transition: all 0.45s cubic-bezier(.4,0,.2,1);
+  flex-shrink: 0;
+}
+
+.layer-id {
+  width: 44px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 700;
+  color: #1B5E6E;
+  letter-spacing: 0.1em;
+  border-right: 1px solid #DDE1E7;
+  background: #F8FAFB;
+  flex-shrink: 0;
+}
+
+.layer-content {
+  flex: 1;
+  padding: 9px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.layer-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1A1A2E;
+  line-height: 1.3;
+}
+
+.layer-sub {
+  font-size: 11px;
+  color: #9CA3AF;
+  margin-top: 2px;
+  line-height: 1.35;
+}
+
+.layer.highlight {
+  background: #E8F4F6;
+  border-color: #1B5E6E;
+}
+.layer.highlight .layer-id {
+  background: #D4EEF2;
+  border-right-color: #B8DEEA;
+}
+.layer.highlight .layer-name {
+  color: #1B5E6E;
+}
+
+.shared-tag {
+  display: flex;
+  align-items: center;
+  padding-right: 12px;
+  font-size: 9px;
+  font-weight: 700;
+  color: #B0C4CB;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  flex-shrink: 0;
+}
+
+/* INTEGRATION PANEL */
+.integration-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 0;
+  opacity: 0;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: all 0.5s cubic-bezier(.4,0,.2,1);
+}
+.integration-panel.visible {
+  width: 170px;
+  opacity: 1;
+}
+
+.integration-header {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: #1B5E6E;
+  text-align: center;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #DDE1E7;
+  margin-bottom: 2px;
+  white-space: nowrap;
+}
+
+.int-source {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.int-box {
+  flex: 1;
+  border: 1px solid #DDE1E7;
+  border-radius: 6px;
+  padding: 7px 10px;
+  background: #FFFFFF;
+  font-size: 12px;
+  font-weight: 600;
+  color: #1A1A2E;
+  text-align: center;
+}
+
+.int-arrow {
+  font-size: 13px;
+  color: #1B5E6E;
+  flex-shrink: 0;
+  width: 18px;
+  text-align: center;
+}
+
+/* SPLIT SECTION */
+.split-row {
+  display: flex;
+  gap: 12px;
+  flex: 1;
+  min-height: 0;
+}
+
+.tenant-box {
+  flex: 1;
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.tenant-box.standard { border: 2px solid #2B6E4A; }
+.tenant-box.military { border: 2px solid #8B4A2A; }
+
+.tenant-header {
+  padding: 8px 13px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.tenant-box.standard .tenant-header { background: #F0FAF4; color: #2B6E4A; border-bottom: 1px solid #C8E6D0; }
+.tenant-box.military .tenant-header { background: #FDF4F0; color: #8B4A2A; border-bottom: 1px solid #E8D0C4; }
+
+.tenant-layer {
+  padding: 8px 13px;
+  border-bottom: 1px solid #F0F0F0;
+  background: #FFFFFF;
+  flex-shrink: 0;
+}
+.tenant-layer:last-child { border-bottom: none; flex: 1; }
+
+.tenant-layer-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: #9CA3AF;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 2px;
+}
+
+.tenant-layer-detail {
+  font-size: 11px;
+  color: #1A1A2E;
+  line-height: 1.4;
+}
+
+.tenant-tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  padding: 6px 13px 8px;
+  background: #FFFFFF;
+}
+
+.tag {
+  border-radius: 10px;
+  padding: 2px 7px;
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+.tag.green { background: #EDF7EE; border: 1px solid #B8DFC0; color: #2B6E4A; }
+.tag.terra { background: #FDF4F0; border: 1px solid #E8D0C4; color: #8B4A2A; }
+
+/* SPLITS DIVIDER */
+.splits-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0 4px;
+  flex-shrink: 0;
+}
+.splits-line {
+  flex: 1;
+  border-top: 1px dashed #DDE1E7;
+}
+.splits-label {
+  font-size: 10px;
+  color: #B0BAC4;
+  white-space: nowrap;
+}
+
+/* END SUMMARY */
+.end-summary {
+  margin-top: 12px;
+  padding: 14px 18px;
+  background: #E8F4F6;
+  border: 1px solid #1B5E6E;
+  border-radius: 8px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.end-title { font-size: 15px; font-weight: 700; color: #1B5E6E; }
+.end-sub { font-size: 11px; color: #799EAC; margin-top: 4px; }
+
+/* HINT */
+.hint-text {
+  text-align: center;
+  font-size: 11px;
+  color: #B0BAC4;
+  font-style: italic;
+  padding: 5px 24px;
+  flex-shrink: 0;
+  min-height: 22px;
+  line-height: 1.4;
+}
+
+/* NAV */
+.nav-area {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 24px 13px;
+  flex-shrink: 0;
+}
+
+.nav-btn {
+  padding: 7px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.18s;
+  border: none;
+  outline: none;
+  font-family: inherit;
+}
+.nav-btn.primary { background: #1B5E6E; color: #FFFFFF; }
+.nav-btn.primary:hover { background: #164E5C; }
+.nav-btn.secondary { background: #FFFFFF; color: #1B5E6E; border: 1px solid #DDE1E7; }
+.nav-btn.secondary:hover { background: #E8F4F6; border-color: #1B5E6E; }
+.nav-btn:disabled { opacity: 0.28; cursor: default; pointer-events: none; }
+
+.dots { display: flex; gap: 7px; align-items: center; }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: #DDE1E7; transition: all 0.22s; cursor: pointer; }
+.dot.active { background: #1B5E6E; transform: scale(1.35); }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+.fade-in { animation: fadeInUp 0.38s cubic-bezier(.4,0,.2,1) both; }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="phase-title-main" id="phase-title">Platform Architecture</div>
+  <div class="phase-counter" id="phase-counter">1 / 5</div>
+</div>
+
+<div class="main-area" id="main-area">
+  <div class="stack" id="stack"></div>
+  <div class="integration-panel" id="integration-panel">
+    <div class="integration-header">Integration / Migration Layer</div>
+    <div class="int-source">
+      <div class="int-box">SAP</div>
+      <div class="int-arrow">←</div>
+    </div>
+    <div class="int-source">
+      <div class="int-box">PLM</div>
+      <div class="int-arrow">←</div>
+    </div>
+    <div class="int-source">
+      <div class="int-box">CRM</div>
+      <div class="int-arrow">←</div>
+    </div>
+    <div class="int-source">
+      <div class="int-box">MES</div>
+      <div class="int-arrow">←</div>
+    </div>
+  </div>
+</div>
+
+<div class="hint-text" id="hint-text"></div>
+
+<div class="nav-area">
+  <button class="nav-btn secondary" id="btn-back">← Back</button>
+  <div class="dots" id="dots"></div>
+  <button class="nav-btn primary" id="btn-next">Next →</button>
+</div>
+
+<script>
+const PHASES = [
+  {
+    title: 'Platform Architecture',
+    hint: 'Four foundational layers — from database to user interface.',
+    integration: false,
+    split: false,
+    end: false,
+    layers: [
+      { id: 'L3', name: 'User Layer',            sub: 'UI/UX · Google/Outlook · Claude Integration · Widgets',    highlight: false },
+      { id: 'L2', name: 'AI & Workflow Engine',   sub: 'AI, Automation, Reporting · Workflow Engine',             highlight: false },
+      { id: 'L1', name: 'Semantic Data Layer',    sub: 'Datenmodell · Business-Logik · KPI-Definitionen',         highlight: false },
+      { id: 'L0', name: 'Database / Data Lake',   sub: 'PostgreSQL · Location of data origin',                   highlight: false },
+    ],
+  },
+  {
+    title: 'Layer Detail',
+    hint: 'L2a (Workflow) and L2b (Intelligence) are deliberately separated: deterministic vs. probabilistic.',
+    integration: false,
+    split: false,
+    end: false,
+    layers: [
+      { id: 'L3',  name: 'User Layer',         sub: 'UI/UX · Google/Outlook · Claude Integration · Widgets',      highlight: false },
+      { id: 'L2b', name: 'Intelligence Layer', sub: 'Claude AI · Reporting · Insights',                            highlight: true  },
+      { id: 'L2a', name: 'Workflow Engine',    sub: 'Temporal.io · Process Logic · Approvals · Escalations',       highlight: true  },
+      { id: 'L1b', name: 'Semantic Layer',     sub: 'KPI-Definitionen · Cube.dev · Business-Metriken · AI-Interface', highlight: true  },
+      { id: 'L1a', name: 'Domain Model',       sub: 'Prisma ORM · Entitäten · Relationen · Customer · Order · Invoice · GL', highlight: true  },
+      { id: 'L0',  name: 'Database / Data Lake', sub: 'PostgreSQL · Location of data origin',                     highlight: false },
+    ],
+  },
+  {
+    title: 'Integration / Migration Layer',
+    hint: 'Temporary onboarding infrastructure — decommissionable after cutover.',
+    integration: true,
+    split: false,
+    end: false,
+    layers: [
+      { id: 'L3',  name: 'User Layer',         sub: 'UI/UX · Google/Outlook · Claude Integration',                highlight: false },
+      { id: 'L2b', name: 'Intelligence Layer', sub: 'Claude AI · Reporting · Insights',                            highlight: false },
+      { id: 'L2a', name: 'Workflow Engine',    sub: 'Temporal.io · Process Logic',                                  highlight: false },
+      { id: 'L1b', name: 'Semantic Layer',     sub: 'KPI-Definitionen · Cube.dev',                                  highlight: false },
+      { id: 'L1a', name: 'Domain Model',       sub: 'Prisma ORM · Relationen  ← schema mapping',                   highlight: true  },
+      { id: 'L0',  name: 'Database / Data Lake', sub: 'PostgreSQL  ← primary data ingestion',                      highlight: true  },
+    ],
+  },
+  {
+    title: 'Multi-Tenancy',
+    hint: 'Shared application layer — isolated data layer per tenant type.',
+    integration: false,
+    split: true,
+    end: false,
+    layers: [
+      { id: 'L3',  name: 'User Layer',         sub: 'UI/UX · Google/Outlook · Claude Integration', highlight: false, shared: true },
+      { id: 'L2b', name: 'Intelligence Layer', sub: 'Claude AI · Reporting · Insights',             highlight: false, shared: true },
+      { id: 'L2a', name: 'Workflow Engine',    sub: 'Temporal.io · Process Logic',                  highlight: false, shared: true },
+      { id: 'L1b', name: 'Semantic Layer',     sub: 'KPI-Definitionen · Cube.dev',                  highlight: false, shared: true },
+    ],
+  },
+  {
+    title: 'Ready to Deploy',
+    hint: '90 days from contract to live platform.',
+    integration: false,
+    split: false,
+    end: true,
+    layers: [
+      { id: 'L3', name: 'User Layer',            sub: 'UI/UX · Google/Outlook · Claude Integration · Widgets',    highlight: false },
+      { id: 'L2', name: 'AI & Workflow Engine',   sub: 'AI, Automation, Reporting · Workflow Engine',             highlight: false },
+      { id: 'L1', name: 'Semantic Data Layer',    sub: 'Datenmodell · Business-Logik · KPI-Definitionen',         highlight: false },
+      { id: 'L0', name: 'Database / Data Lake',   sub: 'PostgreSQL · Location of data origin',                   highlight: false },
+    ],
+  },
+];
+
+let current = 0;
+
+// Build dots
+const dotsEl = document.getElementById('dots');
+PHASES.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'dot' + (i === 0 ? ' active' : '');
+  d.addEventListener('click', () => goTo(i));
+  dotsEl.appendChild(d);
+});
+
+function goTo(idx) {
+  if (idx < 0) idx = 0;
+  if (idx >= PHASES.length) idx = 0; // restart
+  current = idx;
+  render();
+}
+
+function render() {
+  const phase = PHASES[current];
+
+  // Header
+  document.getElementById('phase-title').textContent = phase.title;
+  document.getElementById('phase-counter').textContent = (current + 1) + ' / ' + PHASES.length;
+  document.getElementById('hint-text').textContent = phase.hint;
+
+  // Dots
+  dotsEl.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+
+  // Buttons
+  const btnBack = document.getElementById('btn-back');
+  const btnNext = document.getElementById('btn-next');
+  btnBack.disabled = current === 0;
+  btnNext.textContent = current === PHASES.length - 1 ? '↺ Restart' : 'Next →';
+
+  // Integration panel
+  const intPanel = document.getElementById('integration-panel');
+  intPanel.classList.toggle('visible', !!phase.integration);
+
+  // Render stack
+  const stack = document.getElementById('stack');
+  stack.innerHTML = '';
+
+  if (phase.split) {
+    // Phase 4: shared top + split below
+    const sharedDiv = document.createElement('div');
+    sharedDiv.style.cssText = 'display:flex;flex-direction:column;gap:5px;flex-shrink:0;';
+    phase.layers.forEach(l => sharedDiv.appendChild(createLayer(l)));
+    stack.appendChild(sharedDiv);
+
+    const divider = document.createElement('div');
+    divider.className = 'splits-divider';
+    divider.innerHTML = '<div class="splits-line"></div><div class="splits-label">splits here</div><div class="splits-line"></div>';
+    stack.appendChild(divider);
+
+    const splitRow = document.createElement('div');
+    splitRow.className = 'split-row';
+
+    // Standard tenant
+    const stdBox = document.createElement('div');
+    stdBox.className = 'tenant-box standard fade-in';
+    stdBox.innerHTML = `
+      <div class="tenant-header">Standard Multi-Tenant</div>
+      <div class="tenant-layer">
+        <div class="tenant-layer-label">L1a Domain Model</div>
+        <div class="tenant-layer-detail">Shared Schema · tenantId Row-Level Security</div>
+      </div>
+      <div class="tenant-layer">
+        <div class="tenant-layer-label">L0 Database</div>
+        <div class="tenant-layer-detail">PostgreSQL · Shared DB<br>Vercel / Railway</div>
+      </div>
+      <div class="tenant-tags">
+        <span class="tag green">Tenant A</span>
+        <span class="tag green">Tenant B</span>
+        <span class="tag green">Tenant C</span>
+      </div>
+    `;
+
+    // Military tenant
+    const milBox = document.createElement('div');
+    milBox.className = 'tenant-box military fade-in';
+    milBox.style.animationDelay = '0.08s';
+    milBox.innerHTML = `
+      <div class="tenant-header">🛡 Military / CMMC L2</div>
+      <div class="tenant-layer">
+        <div class="tenant-layer-label">L1a Domain Model</div>
+        <div class="tenant-layer-detail">Isolated Schema + Data Classification</div>
+      </div>
+      <div class="tenant-layer">
+        <div class="tenant-layer-label">L0 Database</div>
+        <div class="tenant-layer-detail">PostgreSQL (Encrypted)<br>AWS GovCloud · FIPS 140-2</div>
+      </div>
+      <div class="tenant-tags">
+        <span class="tag terra">Azure OpenAI Gov</span>
+        <span class="tag terra">FedRAMP</span>
+        <span class="tag terra">Isolated VPC</span>
+      </div>
+    `;
+
+    splitRow.appendChild(stdBox);
+    splitRow.appendChild(milBox);
+    stack.appendChild(splitRow);
+
+  } else {
+    // Normal stack view
+    const layersDiv = document.createElement('div');
+    layersDiv.style.cssText = 'display:flex;flex-direction:column;gap:5px;';
+    phase.layers.forEach(l => layersDiv.appendChild(createLayer(l)));
+    stack.appendChild(layersDiv);
+
+    if (phase.end) {
+      const endDiv = document.createElement('div');
+      endDiv.className = 'end-summary fade-in';
+      endDiv.innerHTML = `
+        <div class="end-title">One Platform. Every Company.</div>
+        <div class="end-sub">L0 → L1a → L1b → Workflow Engine → Intelligence → User Layer</div>
+      `;
+      stack.appendChild(endDiv);
+    }
+  }
+
+  // Animate stack
+  stack.classList.remove('fade-in');
+  void stack.offsetWidth;
+  stack.classList.add('fade-in');
+}
+
+function createLayer(l) {
+  const el = document.createElement('div');
+  el.className = 'layer' + (l.highlight ? ' highlight' : '');
+  el.innerHTML = `
+    <div class="layer-id">${l.id}</div>
+    <div class="layer-content">
+      <div class="layer-name">${l.name}</div>
+      <div class="layer-sub">${l.sub}</div>
+    </div>
+    ${l.shared ? '<div class="shared-tag">shared</div>' : ''}
+  `;
+  return el;
+}
+
+document.getElementById('btn-back').addEventListener('click', () => goTo(current - 1));
+document.getElementById('btn-next').addEventListener('click', () => goTo(current + 1));
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') goTo(current - 1);
+});
+
+render();
+</script>
+</body>
+</html>
