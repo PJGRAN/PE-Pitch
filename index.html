@@ -554,15 +554,15 @@
     stackCol.style.cssText = 'flex:0 0 175px;display:flex;flex-direction:column;gap:4px;';
     stackLayers.forEach(l => stackCol.appendChild(l));
 
-    // Flow lane helper: creates a column with a center track + animated dots
+    // Flow lane helper: one horizontal line + dot per connection point
     function makeFlowCol(yPositions) {
       const col = aEl('div');
       col.style.cssText = 'flex:0 0 38px;position:relative;align-self:stretch;overflow:visible;';
-      const track = aEl('div');
-      track.style.cssText = 'position:absolute;top:5%;bottom:5%;left:19px;width:1px;background:rgba(62,111,163,0.18);';
-      col.appendChild(track);
       const dots = [];
       yPositions.forEach(({ yPct, isReturn }) => {
+        const line = aEl('div');
+        line.style.cssText = `position:absolute;top:${yPct}%;left:0;right:0;height:1px;background:rgba(62,111,163,${isReturn ? '0.12' : '0.22'});margin-top:-0.5px;`;
+        col.appendChild(line);
         const d = aEl('div');
         const sz = isReturn ? 3 : 4;
         const op = isReturn ? 0.45 : 0.82;
