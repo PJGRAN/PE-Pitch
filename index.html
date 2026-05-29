@@ -464,7 +464,7 @@
   const archPbarEl  = document.getElementById('arch-pbar');
   const archPlblEl  = document.getElementById('arch-plbl');
 
-  const ARCH_DWELL  = [4000, 5200, 6000, 6500];
+  const ARCH_DWELL  = [8000, 10400, 12000, 13000];
   const ARCH_LABELS = ['Platform Architecture', 'Layer Detail', 'Data Integration', 'Multi-Tenant Portfolio'];
 
   let archCur = 0, archTimer = null, archActiveView = null, archInited = false;
@@ -499,8 +499,8 @@
     view.appendChild(wrap);
     return { view, animate() {
       const tl = gsap.timeline();
-      tl.from([...layers].reverse(), { opacity: 0, y: 22, scale: 0.97, duration: 0.55, stagger: 0.1, ease: 'power3.out' });
-      tl.from(layers.map(l => l.querySelector('.arch-lsub')), { opacity: 0, duration: 0.4, stagger: 0.07, ease: 'power2.out' }, '-=0.35');
+      tl.from([...layers].reverse(), { opacity: 0, y: 22, scale: 0.97, duration: 1.1, stagger: 0.2, ease: 'power3.out' });
+      tl.from(layers.map(l => l.querySelector('.arch-lsub')), { opacity: 0, duration: 0.8, stagger: 0.14, ease: 'power2.out' }, '-=0.7');
     }};
   }
 
@@ -525,13 +525,13 @@
       const mid = layers.slice(1, 5);
       // Pre-set middle layers to collapsed — outer layers spread apart first
       gsap.set(mid, { scaleY: 0, opacity: 0, transformOrigin: 'center center' });
-      const tl = gsap.timeline({ delay: 0.25 });
+      const tl = gsap.timeline({ delay: 0.5 });
       // Step 1: outer layers enter from top/bottom
-      tl.from(layers[0], { opacity: 0, y: -18, duration: 0.42, ease: 'power3.out' });
-      tl.from(layers[5], { opacity: 0, y:  18, duration: 0.42, ease: 'power3.out' }, '<');
+      tl.from(layers[0], { opacity: 0, y: -18, duration: 0.84, ease: 'power3.out' });
+      tl.from(layers[5], { opacity: 0, y:  18, duration: 0.84, ease: 'power3.out' }, '<');
       // Step 2: gap expands — middle layers scale in once outer layers are in position
-      tl.to(mid, { scaleY: 1, opacity: 1, duration: 0.4, stagger: 0.09, ease: 'back.out(1.3)' }, '+=0.2');
-      tl.from(note, { opacity: 0, y: 8, duration: 0.38, ease: 'power2.out' }, '-=0.1');
+      tl.to(mid, { scaleY: 1, opacity: 1, duration: 0.8, stagger: 0.18, ease: 'back.out(1.3)' }, '+=0.4');
+      tl.from(note, { opacity: 0, y: 8, duration: 0.76, ease: 'power2.out' }, '-=0.2');
     }};
   }
 
@@ -607,21 +607,21 @@
     outer.appendChild(row); outer.appendChild(note);
     view.appendChild(outer);
     return { view, animate() {
-      const tl = gsap.timeline({ delay: 0.25 });
+      const tl = gsap.timeline({ delay: 0.5 });
       // Entrance: stack in from left, integration + sources in from right
-      tl.from(stackLayers, { opacity: 0, x: -14, duration: 0.45, stagger: 0.06, ease: 'power3.out' });
-      tl.from(mig,         { opacity: 0, x:  28, duration: 0.48, ease: 'power3.out' }, '-=0.2');
-      tl.from(sources,     { opacity: 0, x:  22, duration: 0.38, stagger: 0.08, ease: 'power3.out' }, '-=0.2');
-      tl.from(note,        { opacity: 0, y:   7, duration: 0.38, ease: 'power2.out' });
+      tl.from(stackLayers, { opacity: 0, x: -14, duration: 0.9, stagger: 0.12, ease: 'power3.out' });
+      tl.from(mig,         { opacity: 0, x:  28, duration: 0.96, ease: 'power3.out' }, '-=0.4');
+      tl.from(sources,     { opacity: 0, x:  22, duration: 0.76, stagger: 0.16, ease: 'power3.out' }, '-=0.4');
+      tl.from(note,        { opacity: 0, y:   7, duration: 0.76, ease: 'power2.out' });
 
       // Bidirectional data flow: dots animate across connection lanes after entrance
       const OVR = 22; // half-column overshoot in px
-      const FSTART = 1.5;
+      const FSTART = 3.0;
       [...flowL.dots, ...flowR.dots].forEach(({ d, isReturn }, fi) => {
         const fromX = isReturn ? -OVR : OVR;
         const toX   = isReturn ?  OVR : -OVR;
-        const dur   = isReturn ? 1.8 : 1.1 + (fi % 3) * 0.12;
-        const delay = FSTART + fi * 0.28;
+        const dur   = isReturn ? 3.6 : 2.2 + (fi % 3) * 0.24;
+        const delay = FSTART + fi * 0.56;
         gsap.fromTo(d, { x: fromX }, { x: toX, ease: 'none', duration: dur, repeat: -1, delay });
       });
     }};
@@ -709,22 +709,22 @@
     view.appendChild(outer);
 
     return { view, animate() {
-      const tl = gsap.timeline({ delay: 0.25 });
+      const tl = gsap.timeline({ delay: 0.5 });
       // Cockpit drops in from above
-      tl.from(cockpit,      { opacity: 0, y: -22, scale: 0.97, duration: 0.52, ease: 'power3.out' });
-      tl.from(cpLayers,     { opacity: 0, scale: 0.94, duration: 0.36, stagger: 0.1, ease: 'back.out(1.5)' }, '-=0.25');
+      tl.from(cockpit,      { opacity: 0, y: -22, scale: 0.97, duration: 1.04, ease: 'power3.out' });
+      tl.from(cpLayers,     { opacity: 0, scale: 0.94, duration: 0.72, stagger: 0.2, ease: 'back.out(1.5)' }, '-=0.5');
       // Tenant columns fan in
-      tl.from(tenantCols,   { opacity: 0, y: 20, scale: 0.96, duration: 0.44, stagger: 0.09, ease: 'power3.out' }, '-=0.1');
+      tl.from(tenantCols,   { opacity: 0, y: 20, scale: 0.96, duration: 0.88, stagger: 0.18, ease: 'power3.out' }, '-=0.2');
       // Shared layers rise from below
-      tl.from(sharedLayers, { opacity: 0, y: 14, duration: 0.4, stagger: 0.1, ease: 'power3.out' }, '-=0.2');
-      tl.from(note,         { opacity: 0, duration: 0.3, ease: 'power2.out' }, '-=0.05');
+      tl.from(sharedLayers, { opacity: 0, y: 14, duration: 0.8, stagger: 0.2, ease: 'power3.out' }, '-=0.4');
+      tl.from(note,         { opacity: 0, duration: 0.6, ease: 'power2.out' }, '-=0.1');
 
       // Continuous data flow: dots float upward from tenants to PE-Cockpit
       connDots.forEach(({ d, col, j }) => {
-        const delay = 1.5 + col * 0.28 + j * 0.55;
+        const delay = 3.0 + col * 0.56 + j * 1.1;
         gsap.fromTo(d,
           { y: 0, opacity: 0.85 },
-          { y: -20, opacity: 0, ease: 'power1.in', duration: 0.65, repeat: -1, delay }
+          { y: -20, opacity: 0, ease: 'power1.in', duration: 1.3, repeat: -1, delay }
         );
       });
     }};
@@ -756,14 +756,14 @@
 
     if (archActiveView) {
       const old = archActiveView;
-      gsap.to(old, { opacity: 0, duration: 0.28, ease: 'power2.in',
+      gsap.to(old, { opacity: 0, duration: 0.56, ease: 'power2.in',
         onComplete: () => {
           if (archStageEl.contains(old)) archStageEl.removeChild(old);
-          gsap.to(view, { opacity: 1, duration: 0.22, ease: 'power2.out' });
+          gsap.to(view, { opacity: 1, duration: 0.44, ease: 'power2.out' });
         }
       });
     } else {
-      gsap.to(view, { opacity: 1, duration: 0.28, ease: 'power2.out' });
+      gsap.to(view, { opacity: 1, duration: 0.56, ease: 'power2.out' });
     }
 
     archActiveView = view;
@@ -774,8 +774,8 @@
     archPlblEl.textContent = ARCH_LABELS[archCur];
     gsap.fromTo(archPlblEl,
       { opacity: 0, y: -5 },
-      { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out',
-        onComplete: () => gsap.to(archPlblEl, { opacity: 0, delay: 1.8, duration: 0.5, ease: 'power2.in' })
+      { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out',
+        onComplete: () => gsap.to(archPlblEl, { opacity: 0, delay: 3.6, duration: 1.0, ease: 'power2.in' })
       }
     );
 
