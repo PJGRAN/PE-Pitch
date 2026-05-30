@@ -137,7 +137,7 @@ function archP2() {
 
   /* Fußnote: erklärt die bewusste Trennung von L2a und L2b */
   const note = aEl('div');
-  note.style.cssText = 'font-size:10px;color:var(--muted);font-style:italic;text-align:center;margin-top:7px;';
+  note.style.cssText = 'font-size:11px;color:var(--muted);font-style:italic;text-align:center;margin-top:7px;';
   note.textContent = 'L2a (deterministisch) und L2b (probabilistisch) sind bewusst getrennt';
 
   const wrap = aEl('div');
@@ -235,11 +235,11 @@ function archP3() {
     'flex:0 0 138px;background:rgba(62,111,163,0.07);border:1px solid var(--accent-border);' +
     'border-radius:10px;overflow:hidden;box-shadow:0 1px 12px rgba(62,111,163,0.1);align-self:center;';
   mig.innerHTML =
-    `<div style="padding:6px 11px;font-size:9px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);border-bottom:1px solid var(--accent-border);background:rgba(62,111,163,0.06);text-align:center;">Integration Layer</div>` +
-    `<div style="padding:5px 11px;font-size:10px;color:var(--muted);border-bottom:1px solid rgba(62,111,163,0.07);">Schema Mapping</div>` +
-    `<div style="padding:5px 11px;font-size:10px;color:var(--muted);border-bottom:1px solid rgba(62,111,163,0.07);">Data Transform</div>` +
-    `<div style="padding:5px 11px;font-size:10px;color:var(--muted);border-bottom:1px solid rgba(62,111,163,0.07);">Validation</div>` +
-    `<div style="padding:5px 11px;font-size:10px;color:var(--muted);">Cutover Tooling</div>`;
+    `<div style="padding:6px 11px;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);border-bottom:1px solid var(--accent-border);background:rgba(62,111,163,0.06);text-align:center;">Integration Layer</div>` +
+    `<div style="padding:5px 11px;font-size:11px;color:var(--muted);border-bottom:1px solid rgba(62,111,163,0.07);">Schema Mapping</div>` +
+    `<div style="padding:5px 11px;font-size:11px;color:var(--muted);border-bottom:1px solid rgba(62,111,163,0.07);">Data Transform</div>` +
+    `<div style="padding:5px 11px;font-size:11px;color:var(--muted);border-bottom:1px solid rgba(62,111,163,0.07);">Validation</div>` +
+    `<div style="padding:5px 11px;font-size:11px;color:var(--muted);">Cutover Tooling</div>`;
 
   /* Rechter Datenfluss: Quell-Systeme → Integration
      Vier Linien bei ~17/37/57/77% entsprechen den vier Quell-Blöcken */
@@ -259,14 +259,14 @@ function archP3() {
     const b = aEl('div');
     b.style.cssText =
       'background:var(--card);border:1px solid var(--card-border);border-radius:7px;' +
-      'padding:7px 10px;font-size:11.5px;font-weight:600;color:var(--text2);' +
+      'padding:7px 10px;font-size:11px;font-weight:700;color:var(--text2);' +
       'text-align:center;box-shadow:0 1px 8px rgba(62,111,163,0.07);';
     b.textContent = name; srcCol.appendChild(b); sources.push(b);
   });
 
   /* Fußnote: Integration Layer ist temporär und nach Cutover abschaltbar */
   const note = aEl('div');
-  note.style.cssText = 'font-size:10px;color:var(--muted);font-style:italic;text-align:center;width:100%;';
+  note.style.cssText = 'font-size:11px;color:var(--muted);font-style:italic;text-align:center;width:100%;';
   note.textContent = 'Temporäre Onboarding-Infrastruktur — nach Cutover abschaltbar';
 
   row.appendChild(stackCol); row.appendChild(flowL.col); row.appendChild(mig);
@@ -324,8 +324,8 @@ function archP4() {
   const cpHdr = aEl('div');
   cpHdr.style.cssText = 'padding:5px 14px;background:var(--accent);display:flex;align-items:center;gap:10px;';
   cpHdr.innerHTML =
-    '<span style="font-size:9.5px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#fff;">PE-Cockpit</span>' +
-    '<span style="font-size:9px;color:rgba(255,255,255,0.72);font-weight:300;">Portfolio Visibility Layer</span>';
+    '<span style="font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#fff;">PE-Cockpit</span>' +
+    '<span style="font-size:11px;color:rgba(255,255,255,0.72);font-weight:300;">Portfolio Visibility Layer</span>';
 
   /* Zwei Sub-Layer im Cockpit: User Layer + AI & Reporting */
   const cpBody = aEl('div');
@@ -339,8 +339,8 @@ function archP4() {
       'flex:1;background:rgba(255,255,255,0.9);border:1px solid var(--accent-border);' +
       'border-radius:7px;padding:6px 10px;';
     l.innerHTML =
-      `<div style="font-size:11px;font-weight:600;color:var(--accent);">${name}</div>` +
-      `<div style="font-size:9.5px;color:var(--muted);margin-top:2px;line-height:1.4;">${sub}</div>`;
+      `<div style="font-size:11px;font-weight:700;color:var(--accent);">${name}</div>` +
+      `<div style="font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4;">${sub}</div>`;
     cpBody.appendChild(l); cpLayers.push(l);
   });
   cockpit.appendChild(cpHdr); cockpit.appendChild(cpBody);
@@ -383,7 +383,7 @@ function archP4() {
     const hdr = aEl('div');
     hdr.style.cssText =
       'padding:4px 8px;background:rgba(62,111,163,0.05);border-bottom:1px solid var(--card-border);' +
-      'font-size:8.5px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);text-align:center;';
+      'font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);text-align:center;';
     hdr.textContent = name;
     const inner = aEl('div');
     inner.style.cssText = 'display:flex;flex-direction:column;gap:4px;padding:6px;';
@@ -404,7 +404,7 @@ function archP4() {
 
   /* Fußnote: erklärt die Isolierungs-/Sharing-Grenze */
   const note = aEl('div');
-  note.style.cssText = 'font-size:9.5px;color:var(--muted);font-style:italic;text-align:center;margin-top:4px;';
+  note.style.cssText = 'font-size:11px;color:var(--muted);font-style:italic;text-align:center;margin-top:4px;';
   note.textContent = 'L2a/L2b sind tenant-isoliert — L1 und L0 werden shared betrieben';
 
   outer.appendChild(cockpit); outer.appendChild(connZone);
