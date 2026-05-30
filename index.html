@@ -30,7 +30,7 @@
 
     <div id="slides-wrap">
 
-      <!-- 1. OPENER -->
+      <!-- 1. HERO -->
       <div class="slide" data-index="0">
         <div class="sc center">
           <img src="capgemini-logo.png" alt="Capgemini Invent"
@@ -40,7 +40,7 @@
           <h1 class="anim">One platform per portfolio company.<br><strong>Live in 90 days. Operated by Capgemini.</strong></h1>
           <div class="divider anim" style="margin:16px auto;"></div>
           <p class="sub anim" style="text-align:center;">
-            We replace the fragmented systems of record in your portfolio companies with a single, AI-native platform — giving you real-time visibility across every holding, from acquisition to exit.
+            Portfolio companies run on fragmented systems that were never designed to work together. We replace them with a single platform, give you real-time visibility across every holding, and operate it ourselves.
           </p>
           <div class="stats-row anim">
             <div class="stat"><div class="stat-num">90</div><div class="stat-label">Days to go live</div></div>
@@ -51,7 +51,7 @@
         </div>
       </div>
 
-      <!-- 2. PROBLEM STATEMENT -->
+      <!-- 2. THE REALITY TODAY -->
       <div class="slide" data-index="1">
         <div class="sc">
           <div class="label anim">The Situation</div>
@@ -60,69 +60,79 @@
           <div class="grid-3 anim">
             <div class="card">
               <div class="card-title">Acquisition cost</div>
-              <div class="card-body">Every acquisition loses <strong>3 to 6 months</strong> to data archaeology — manually extracting, cleaning, and reconciling data across ERP, CRM, and spreadsheets before a single insight is possible.</div>
+              <div class="card-body">Every acquisition loses <strong>3 to 6 months</strong> to data archaeology. Before a single insight is possible, someone has to manually extract, clean, and reconcile data across ERP, CRM, and spreadsheets.</div>
             </div>
             <div class="card">
               <div class="card-title">Hold period cost</div>
-              <div class="card-body">Portfolio reporting relies on <strong>quarterly Excel exports</strong> that are already outdated when they arrive. Value creation decisions are based on data that is weeks old.</div>
+              <div class="card-body">Portfolio reporting runs on <strong>quarterly Excel exports</strong> that are months old by the time they arrive. Value creation decisions are made on data that does not reflect the current state of the business.</div>
             </div>
             <div class="card">
               <div class="card-title">Exit cost</div>
-              <div class="card-body">Buyers discount companies with fragmented data. <strong>Months of pre-exit data cleanup</strong> reduce the time available to grow the business and compress the achievable multiple.</div>
+              <div class="card-body">Buyers discount companies with fragmented data. <strong>Pre-exit data cleanup takes months</strong> and compresses the achievable multiple. The problem should have been solved at acquisition, not in the final year of ownership.</div>
             </div>
           </div>
           <div class="root-cause anim">
-            <p style="font-size:13px;color:var(--muted);line-height:1.7;">The root cause is not a lack of tools. It is the architecture: <strong style="color:var(--text2);">multiple systems of record that were never designed to share a common data model.</strong> Adding another integration layer does not solve this. It compounds it.</p>
+            <p style="font-size:14px;color:var(--muted);line-height:1.7;">The root cause is not a lack of tools. It is the architecture: <strong style="color:var(--text2);">multiple systems of record that were never built to share a common data model.</strong> Adding another integration layer does not solve this. It makes the problem harder to undo.</p>
           </div>
         </div>
       </div>
 
-      <!-- 3. APPROACH -->
+      <!-- 3. OUR APPROACH -->
       <div class="slide" data-index="2">
         <div class="sc center">
           <div class="label anim">Our Approach</div>
-          <h2 class="anim">We don't integrate existing systems.<br><strong>We replace them.</strong></h2>
-          <div class="contrast-grid anim" style="text-align:left;">
+          <h2 class="anim">We don't add another layer on top.<br><strong>We replace the stack.</strong></h2>
+          <p class="sub anim" style="text-align:center;">The standard answer is middleware. Connect SAP, Salesforce, and Excel via an integration layer, and report from the top. That preserves every inconsistency in the underlying systems. We take the opposite position.</p>
+          <div class="contrast-grid anim" style="text-align:left;margin-top:14px;">
             <div class="contrast-card old">
               <div class="contrast-label old">Conventional approach</div>
               <div class="contrast-item"><div class="contrast-dot old"></div><div class="contrast-text old">Connect SAP, Salesforce, and Excel via middleware</div></div>
-              <div class="contrast-item"><div class="contrast-dot old"></div><div class="contrast-text old">Each system retains its own data model and definitions</div></div>
-              <div class="contrast-item"><div class="contrast-dot old"></div><div class="contrast-text old">Every new acquisition requires a new integration project</div></div>
-              <div class="contrast-item"><div class="contrast-dot old"></div><div class="contrast-text old">Complexity compounds with each portfolio addition</div></div>
+              <div class="contrast-item"><div class="contrast-dot old"></div><div class="contrast-text old">Each system keeps its own data model and definitions</div></div>
+              <div class="contrast-item"><div class="contrast-dot old"></div><div class="contrast-text old">KPI definitions differ across systems; reconciliation stays manual</div></div>
+              <div class="contrast-item"><div class="contrast-dot old"></div><div class="contrast-text old">Every acquisition requires a new integration project</div></div>
+              <div class="contrast-item"><div class="contrast-dot old"></div><div class="contrast-text old">Complexity grows with each portfolio addition</div></div>
             </div>
             <div class="contrast-card new">
               <div class="contrast-label new">Capgemini approach</div>
               <div class="contrast-item"><div class="contrast-dot new"></div><div class="contrast-text new">One application replaces the fragmented stack per company</div></div>
-              <div class="contrast-item"><div class="contrast-dot new"></div><div class="contrast-text new">Single data model — every KPI defined once, consistently</div></div>
-              <div class="contrast-item"><div class="contrast-dot new"></div><div class="contrast-text new">Each new acquisition uses the same playbook — no custom build</div></div>
-              <div class="contrast-item"><div class="contrast-dot new"></div><div class="contrast-text new">Complexity decreases with each portfolio addition</div></div>
-            </div>
-          </div>
-          <div class="method-flow anim">
-            <div class="method-step">
-              <div class="method-icon">🎯</div>
-              <div class="method-num">Step 01</div>
-              <div class="method-name">Problem</div>
-              <div class="method-desc">Every operational problem is decomposed into a structured tree. No technology decision is made until the problem is precisely defined.</div>
-            </div>
-            <div class="method-step">
-              <div class="method-icon">⚙️</div>
-              <div class="method-num">Step 02</div>
-              <div class="method-name">Workflow</div>
-              <div class="method-desc">The process is defined — steps, decisions, handoffs, data flows. This becomes the specification for what the platform must do.</div>
-            </div>
-            <div class="method-step">
-              <div class="method-icon">🤖</div>
-              <div class="method-num">Step 03</div>
-              <div class="method-name">Resource</div>
-              <div class="method-desc">Human, software, or AI is assigned to each step based on fit — not on availability or habit. Legacy systems are replaced only where the workflow is fully mapped.</div>
+              <div class="contrast-item"><div class="contrast-dot new"></div><div class="contrast-text new">Single data model, every KPI defined once and applied consistently</div></div>
+              <div class="contrast-item"><div class="contrast-dot new"></div><div class="contrast-text new">AI reporting runs on a unified, structured foundation</div></div>
+              <div class="contrast-item"><div class="contrast-dot new"></div><div class="contrast-text new">Each new acquisition uses the same playbook, no custom build</div></div>
+              <div class="contrast-item"><div class="contrast-dot new"></div><div class="contrast-text new">Complexity decreases as the portfolio grows</div></div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 4. ARCHITECTURE — inlined, no iframe, renders on same background as all other slides -->
-      <div class="slide slide-arch" data-index="3">
+      <!-- 4. WHY REPLACEMENT IS SAFE -->
+      <div class="slide" data-index="3">
+        <div class="sc center">
+          <div class="label anim">Why This Works</div>
+          <h2 class="anim">We map the business before<br><strong>we touch the technology.</strong></h2>
+          <div class="divider anim" style="margin:16px auto;"></div>
+          <p class="sub anim" style="text-align:center;">Replacing systems of record is only safe if you understand the underlying business logic first. Our method enforces that sequence and does not allow a technology decision until the problem and process are fully defined.</p>
+          <div class="method-flow anim">
+            <div class="method-step">
+              <div class="method-num">Step 01</div>
+              <div class="method-name">Problem</div>
+              <div class="method-desc">Every operational problem is decomposed into a structured issue tree. No technology decision is made until the problem is precisely defined and agreed.</div>
+            </div>
+            <div class="method-step">
+              <div class="method-num">Step 02</div>
+              <div class="method-name">Workflow</div>
+              <div class="method-desc">The process is mapped in full: every step, decision point, handoff, and data flow. This becomes the specification the platform is built against.</div>
+            </div>
+            <div class="method-step">
+              <div class="method-num">Step 03</div>
+              <div class="method-name">Resource</div>
+              <div class="method-desc">Human, software, or AI is assigned to each step based on what fits best, not on what is available or habitual. Legacy systems are replaced only once the workflow is fully mapped.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. THE PLATFORM — architecture animation -->
+      <div class="slide slide-arch" data-index="4">
         <div class="label anim">The Platform</div>
         <div class="arch-wrap">
           <div class="arch-prog"><div class="arch-prog-fill" id="arch-pbar"></div></div>
@@ -131,32 +141,103 @@
         </div>
       </div>
 
-      <!-- 5. CALL TO ACTION -->
-      <div class="slide" data-index="4">
+      <!-- 6. OPERATING MODEL -->
+      <div class="slide" data-index="5">
+        <div class="sc">
+          <div class="label anim">Operating Model</div>
+          <h2 class="anim">This is not a project.<br><strong>It is a platform partnership.</strong></h2>
+          <div class="divider anim"></div>
+          <p class="sub anim">Capgemini owns the platform end-to-end: architecture, deployment, operation, and evolution. The 90-day go-live is the beginning of the engagement, not the deliverable.</p>
+          <div class="contrast-grid anim" style="text-align:left;margin-top:14px;">
+            <div class="card">
+              <div class="card-title" style="margin-bottom:10px;">Phase 1 — Initial Deployment <span style="font-weight:400;opacity:0.65;">(Days 1–90)</span></div>
+              <div class="card-body" style="line-height:1.9;">
+                Business problem decomposition and workflow mapping<br>
+                Platform instance deployed on cloud infrastructure<br>
+                Core systems of record replaced with the unified platform<br>
+                Legacy systems run in parallel during transition<br>
+                All staff operational on day one; no coding skills required
+              </div>
+            </div>
+            <div class="card" style="border-color:var(--accent-border);">
+              <div class="card-title" style="margin-bottom:10px;">Phase 2 — Continuous Operation <span style="font-weight:400;opacity:0.65;">(Month 4 onwards)</span></div>
+              <div class="card-body" style="line-height:1.9;">
+                Capgemini operates the platform; no internal IT team required<br>
+                New workflows and applications added as business needs change<br>
+                AI capabilities extended as the semantic layer matures<br>
+                PE-level portfolio reporting refreshed in real time<br>
+                Exit preparation: data quality and audit trail built continuously
+              </div>
+            </div>
+          </div>
+          <div class="root-cause anim">
+            <p style="font-size:14px;color:var(--muted);line-height:1.7;">One contract with your firm. <strong style="color:var(--text2);">The same platform, the same data model, the same Capgemini team</strong> deployed across every current and future portfolio company.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. WHAT YOU GET -->
+      <div class="slide" data-index="6">
+        <div class="sc">
+          <div class="label anim">What You Get</div>
+          <h2 class="anim">Measurable outcomes across<br><strong>the full investment lifecycle.</strong></h2>
+          <div class="divider anim"></div>
+          <div class="proof-rows anim">
+            <div class="proof-row">
+              <div>
+                <div class="proof-title">Faster due diligence</div>
+                <div class="proof-body">Data is structured from day one of ownership. Every KPI is live, auditable, and queryable. <strong>The 3 to 6 months typically lost to data archaeology at acquisition are eliminated.</strong></div>
+              </div>
+            </div>
+            <div class="proof-row">
+              <div>
+                <div class="proof-title">Real-time portfolio visibility</div>
+                <div class="proof-body">Every holding reports into a single PE dashboard: KPIs, workflow status, deal pipeline. <strong>No Excel exports, no analyst hours spent on consolidation.</strong></div>
+              </div>
+            </div>
+            <div class="proof-row">
+              <div>
+                <div class="proof-title">Higher exit multiple</div>
+                <div class="proof-body">Buyers pay a premium for companies with clean, auditable data and documented processes. <strong>That quality is built continuously throughout the hold period,</strong> not assembled in the final months before exit.</div>
+              </div>
+            </div>
+          </div>
+          <div class="grid-3 anim" style="grid-template-columns:1fr 1fr;max-width:760px;margin-top:14px;">
+            <div class="card">
+              <div class="card-title">AI Reporting On Demand</div>
+              <div class="card-body">Claude analyses the full portfolio without analyst preparation. Ask "Which companies are behind on value creation plan?" and get a structured answer with KPI delta, root cause, and recommended action.</div>
+            </div>
+            <div class="card">
+              <div class="card-title">Consistent KPIs Across All Holdings</div>
+              <div class="card-body">Revenue, EBITDA, headcount, and operational metrics are defined once in the semantic layer and applied consistently across every portfolio company. No reconciliation, no interpretation.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8. WHY CAPGEMINI INVENT -->
+      <div class="slide" data-index="7">
         <div class="sc center">
-          <div class="label anim">Next Step</div>
+          <div class="label anim">Why Capgemini Invent</div>
           <h2 class="anim">We built it. We operate it.<br><strong>We are accountable for it.</strong></h2>
           <div class="divider anim" style="margin:16px auto;"></div>
           <div class="proof-rows anim">
             <div class="proof-row">
-              <div class="proof-icon">🏗️</div>
               <div>
                 <div class="proof-title">Not a proposal — a working platform</div>
-                <div class="proof-body">The platform exists and is operational. Capgemini Invent built every layer — from the data model to the AI integration. <strong>There is no implementation risk from unproven technology.</strong></div>
+                <div class="proof-body">The platform exists and is operational. Capgemini Invent built every layer, from the data model to the AI integration. <strong>There is no implementation risk from unproven technology.</strong></div>
               </div>
             </div>
             <div class="proof-row">
-              <div class="proof-icon">🎯</div>
-              <div>
-                <div class="proof-title">One engagement covers your entire portfolio</div>
-                <div class="proof-body">A single contract with your firm activates the platform for every current and future portfolio company. <strong>The same playbook, the same data model, the same Capgemini team</strong> — no ramp-up from scratch on each acquisition.</div>
-              </div>
-            </div>
-            <div class="proof-row">
-              <div class="proof-icon">📋</div>
               <div>
                 <div class="proof-title">Transformation at C-suite scale</div>
-                <div class="proof-body">Capgemini Invent has delivered operational transformation programs for global organizations including Roche and Beyond Gravity. <strong>We understand what executive-level rollout requires.</strong></div>
+                <div class="proof-body">Capgemini Invent has delivered operational transformation programs for global organizations including Roche and Beyond Gravity. We understand what executive-level rollout requires: <strong>stakeholder alignment, change management, and hard deadlines.</strong></div>
+              </div>
+            </div>
+            <div class="proof-row">
+              <div>
+                <div class="proof-title">One engagement, entire portfolio</div>
+                <div class="proof-body">A single contract activates the platform for every current and future portfolio company. <strong>The same playbook, the same data model, the same Capgemini team.</strong> No separate procurement per holding, no ramp-up from scratch on each acquisition.</div>
               </div>
             </div>
           </div>
@@ -224,7 +305,7 @@
       }, '-=0.28');
     }
     if (idx === 0) tl.call(() => el.querySelectorAll('.stat-num').forEach(animateCounter), [], 0.45);
-    if (idx === 3) tl.call(archStart, [], 0.5);
+    if (idx === 4) tl.call(archStart, [], 0.5);
     return tl;
   }
 

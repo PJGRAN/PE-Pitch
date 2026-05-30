@@ -204,7 +204,7 @@ function archP3() {
       const line = aEl('div');
       line.style.cssText =
         `position:absolute;top:${yPct}%;left:0;right:0;height:1px;` +
-        `background:rgba(62,111,163,${isReturn ? '0.12' : '0.22'});margin-top:-0.5px;`;
+        `background:rgba(0,112,173,${isReturn ? '0.12' : '0.22'});margin-top:-0.5px;`;
       col.appendChild(line);
       /* Beweglicher Punkt, der entlang der Linie animiert wird */
       const d = aEl('div');
@@ -232,13 +232,13 @@ function archP3() {
   /* ── Mittlere Spalte: Integration / Migration Box ── */
   const mig = aEl('div');
   mig.style.cssText =
-    'flex:0 0 138px;background:rgba(62,111,163,0.07);border:1px solid var(--accent-border);' +
-    'border-radius:10px;overflow:hidden;box-shadow:0 1px 12px rgba(62,111,163,0.1);align-self:center;';
+    'flex:0 0 138px;background:rgba(0,112,173,0.07);border:1px solid var(--accent-border);' +
+    'border-radius:10px;overflow:hidden;box-shadow:0 1px 12px rgba(0,112,173,0.1);align-self:center;';
   mig.innerHTML =
-    `<div style="padding:6px 11px;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);border-bottom:1px solid var(--accent-border);background:rgba(62,111,163,0.06);text-align:center;">Integration Layer</div>` +
-    `<div style="padding:5px 11px;font-size:11px;color:var(--muted);border-bottom:1px solid rgba(62,111,163,0.07);">Schema Mapping</div>` +
-    `<div style="padding:5px 11px;font-size:11px;color:var(--muted);border-bottom:1px solid rgba(62,111,163,0.07);">Data Transform</div>` +
-    `<div style="padding:5px 11px;font-size:11px;color:var(--muted);border-bottom:1px solid rgba(62,111,163,0.07);">Validation</div>` +
+    `<div style="padding:6px 11px;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);border-bottom:1px solid var(--accent-border);background:rgba(0,112,173,0.06);text-align:center;">Integration Layer</div>` +
+    `<div style="padding:5px 11px;font-size:11px;color:var(--muted);border-bottom:1px solid rgba(0,112,173,0.07);">Schema Mapping</div>` +
+    `<div style="padding:5px 11px;font-size:11px;color:var(--muted);border-bottom:1px solid rgba(0,112,173,0.07);">Data Transform</div>` +
+    `<div style="padding:5px 11px;font-size:11px;color:var(--muted);border-bottom:1px solid rgba(0,112,173,0.07);">Validation</div>` +
     `<div style="padding:5px 11px;font-size:11px;color:var(--muted);">Cutover Tooling</div>`;
 
   /* Rechter Datenfluss: Quell-Systeme → Integration
@@ -260,7 +260,7 @@ function archP3() {
     b.style.cssText =
       'background:var(--card);border:1px solid var(--card-border);border-radius:7px;' +
       'padding:7px 10px;font-size:11px;font-weight:700;color:var(--text2);' +
-      'text-align:center;box-shadow:0 1px 8px rgba(62,111,163,0.07);';
+      'text-align:center;box-shadow:0 1px 8px rgba(0,112,173,0.07);';
     b.textContent = name; srcCol.appendChild(b); sources.push(b);
   });
 
@@ -318,7 +318,7 @@ function archP4() {
   const cockpit = aEl('div');
   cockpit.style.cssText =
     'border:2px solid var(--accent);border-radius:10px;overflow:hidden;' +
-    'background:rgba(228,240,252,0.88);box-shadow:0 2px 22px rgba(62,111,163,0.18);';
+    'background:rgba(210,233,245,0.88);box-shadow:0 2px 22px rgba(0,112,173,0.18);';
 
   /* Kopfzeile mit Titel */
   const cpHdr = aEl('div');
@@ -356,7 +356,7 @@ function archP4() {
     c.style.cssText = 'flex:1;position:relative;display:flex;justify-content:center;';
     /* Vertikale Verbindungslinie */
     const line = aEl('div');
-    line.style.cssText = 'width:1px;height:100%;background:rgba(62,111,163,0.25);';
+    line.style.cssText = 'width:1px;height:100%;background:rgba(0,112,173,0.25);';
     c.appendChild(line);
     /* Zwei Punkte pro Spalte, versetzt für kontinuierlichen Strom */
     [0, 1].forEach(j => {
@@ -379,10 +379,10 @@ function archP4() {
     const col = aEl('div');
     col.style.cssText =
       'flex:1;border:1px solid var(--card-border);border-radius:8px;overflow:hidden;' +
-      'background:var(--card);box-shadow:0 1px 10px rgba(62,111,163,0.07);';
+      'background:var(--card);box-shadow:0 1px 10px rgba(0,112,173,0.07);';
     const hdr = aEl('div');
     hdr.style.cssText =
-      'padding:4px 8px;background:rgba(62,111,163,0.05);border-bottom:1px solid var(--card-border);' +
+      'padding:4px 8px;background:rgba(0,112,173,0.05);border-bottom:1px solid var(--card-border);' +
       'font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);text-align:center;';
     hdr.textContent = name;
     const inner = aEl('div');
