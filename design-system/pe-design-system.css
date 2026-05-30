@@ -1,0 +1,512 @@
+/* ══════════════════════════════════════════════════════════════════
+   PE DESIGN SYSTEM  —  pe-design-system.css
+   ══════════════════════════════════════════════════════════════════
+   Reusable stylesheet for the Capgemini PE Platform presentation.
+
+   EINBINDEN:
+     <link rel="stylesheet" href="../pe-design-system/pe-design-system.css">
+
+   INHALT:
+      1.  Design Tokens (CSS-Variablen für Farben, Radien, Schatten)
+      2.  Base Reset & Body
+      3.  App Shell (Vollbild-Video, Overlay, Haupt-Layout)
+      4.  Navigation Bar
+      5.  Slide-Container & einzelne Slides
+      6.  Typografie (Labels, Überschriften, Fließtext, Trennlinie)
+      7.  Card-Komponente
+      8.  Stat-Boxen (große Kennzahl + Label)
+      9.  Kontrast-Grid (Alt vs. Neu Vergleich)
+     10.  Method-Flow (nummerierte Prozessschritte)
+     11.  Proof Rows (Icon + Titel + Text Glaubwürdigkeitszeilen)
+     12.  Root-Cause-Box (Hervorgehobener Hinweiskasten)
+     13.  Buttons
+     14.  Progress Bar & Slide-Counter
+     15.  Architecture Animation (arch-* Klassen, zusammen mit pe-design-system.js)
+   ══════════════════════════════════════════════════════════════════ */
+
+
+/* ──────────────────────────────────────────────────────────────────
+   1. DESIGN TOKENS
+   Alle Markenwerte an einem Ort. Für ein neues Projekt nur diesen
+   Block anpassen — der Rest der Datei passt sich automatisch an.
+   ────────────────────────────────────────────────────────────────── */
+:root {
+  /* Primäre Markenfarbe und Abstufungen */
+  --accent:        #3E6FA3;
+  --accent-light:  #7AAFD4;
+  --accent-border: rgba(62, 111, 163, 0.22);
+
+  /* Textfarben (dunkel auf hellem Hintergrund) */
+  --text:  #14100c;
+  --text2: #2a2016;
+  --muted: rgba(20, 16, 12, 0.55);
+
+  /* Karten- und Oberflächenfarben */
+  --card:        rgba(252, 248, 244, 0.88);
+  --card-border: rgba(62, 111, 163, 0.13);
+  --card-shadow: 0 2px 20px rgba(62, 111, 163, 0.08);
+
+  /* Hervorgehobene Oberfläche (für Akzent-Layer in der Animation) */
+  --hi: rgba(232, 244, 246, 0.96);
+
+  /* Globales Ecken-Radius-Token */
+  --radius: 12px;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────
+   2. BASE RESET & BODY
+   Nullt Margins/Padding, setzt globale Schrift und Hintergrundfarbe.
+   overflow:hidden verhindert Scrollbalken auf der Präsentationsseite.
+   ────────────────────────────────────────────────────────────────── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%; overflow: hidden;
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 13px; font-weight: 400;
+  background: #f2ede7;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────
+   3. APP SHELL — HINTERGRUND & HAUPT-LAYOUT
+   #bg-video   — Vollbild-Hintergrundvideo (position:fixed, kein Scroll)
+   #bg-overlay — halbtransparentes Tuch über dem Video für Lesbarkeit
+   #app        — die eigentliche App-Hülle: Nav + Slide-Bereich als Flex-Column
+   ────────────────────────────────────────────────────────────────── */
+#bg-video {
+  position: fixed; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center;
+  z-index: 0; opacity: 0.75;
+}
+
+#bg-overlay {
+  position: fixed; inset: 0;
+  z-index: 1;
+  background: rgba(248, 244, 238, 0.45);
+}
+
+#app {
+  display: flex; flex-direction: column; height: 100vh;
+  position: relative; z-index: 2;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────
+   4. NAVIGATION BAR
+   Fixierte Leiste oben mit Logo, Slide-Dots und Pfeil-Buttons.
+   nav           — die Bar selbst (glasmorphism via backdrop-filter)
+   .nav-brand    — Logo + Separator + Subtitle links
+   .nav-sep      — dünne vertikale Trennlinie zwischen Logo und Subtitle
+   .nav-sub      — kleiner Text rechts neben dem Logo
+   .nav-dots     — Zeile mit kleinen Kreis-Indikatoren (1 pro Slide)
+   .nav-dot      — einzelner Indikator; .active = ausgefüllt + vergrößert
+   .nav-arrows   — Prev/Next Pfeil-Buttons rechts
+   .nav-arrow    — ein Pfeil-Button
+   ────────────────────────────────────────────────────────────────── */
+nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 28px; height: 52px; flex-shrink: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  background: rgba(252, 248, 244, 0.86);
+  backdrop-filter: blur(20px);
+  z-index: 10;
+}
+
+.nav-brand  { display: flex; align-items: center; gap: 14px; }
+.nav-sep    { width: 1px; height: 18px; background: rgba(0, 0, 0, 0.12); }
+.nav-sub    { font-size: 11px; color: var(--muted); letter-spacing: 0.04em; }
+
+.nav-dots   { display: flex; gap: 8px; align-items: center; }
+.nav-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  cursor: pointer; background: rgba(0, 0, 0, 0.15);
+  transition: background 0.25s, transform 0.25s;
+  border: none; outline: none;
+}
+.nav-dot.active { background: var(--accent); transform: scale(1.3); }
+
+.nav-arrows { display: flex; gap: 6px; }
+.nav-arrow {
+  width: 32px; height: 32px; border-radius: 8px; cursor: pointer;
+  background: rgba(255, 255, 255, 0.8); border: 1px solid var(--card-border);
+  color: var(--muted); font-size: 14px;
+  display: flex; align-items: center; justify-content: center;
+  user-select: none;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────
+   5. SLIDE-CONTAINER & EINZELNE SLIDES
+   #slides-wrap  — füllt den verbleibenden Platz unterhalb der Nav
+   .slide        — jeder Slide ist absolut positioniert und initial unsichtbar
+                   (Sichtbarkeit wird per GSAP opacity-Animation gesteuert)
+   .slide-arch   — Override für den Architecture-Slide: oben ausgerichtet
+                   statt zentriert, damit die Animation den Platz füllt
+   ────────────────────────────────────────────────────────────────── */
+#slides-wrap { flex: 1; overflow: hidden; position: relative; }
+
+.slide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 28px 60px;
+  opacity: 0; pointer-events: none;
+  will-change: transform, opacity;
+  overflow-y: auto;
+}
+.slide::-webkit-scrollbar       { width: 4px; }
+.slide::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.15); border-radius: 2px; }
+
+/* Architecture-Slide: oben ausgerichtet, damit die Animation den Raum füllt */
+.slide-arch {
+  justify-content: flex-start;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────
+   6. TYPOGRAFIE
+   .label    — kleines All-Caps-Label über Überschriften (z.B. "The Platform")
+   h1        — große Display-Überschrift, fluid sizing
+   h2        — mittlere Abschnittsüberschrift, fluid sizing
+   .sub      — Fließtext-Untertitel unterhalb einer Überschrift
+   .divider  — horizontale Akzentlinie zwischen Heading und Content
+   .sc       — Inhaltscontainer (max-width, linksbündig)
+   .sc.center— zentrierte Variante
+   ────────────────────────────────────────────────────────────────── */
+.label {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 12px;
+}
+
+h1 {
+  font-size: clamp(26px, 3.6vw, 46px);
+  font-weight: 300; line-height: 1.12; letter-spacing: -0.02em;
+}
+h1 strong { font-weight: 600; }
+
+h2 {
+  font-size: clamp(20px, 2.4vw, 30px);
+  font-weight: 300; line-height: 1.2; letter-spacing: -0.02em;
+}
+h2 strong { font-weight: 600; }
+
+.sub {
+  font-size: 13px; color: var(--muted); font-weight: 300;
+  margin-top: 12px; max-width: 600px; line-height: 1.7;
+}
+
+/* Kurze horizontale Trennlinie, oft zwischen Heading und Card-Grid */
+.divider {
+  width: 40px; height: 2px;
+  background: var(--accent-light); border-radius: 2px;
+  margin: 16px 0;
+}
+
+.sc        { display: flex; flex-direction: column; align-items: flex-start; width: 100%; max-width: 860px; }
+.sc.center { align-items: center; text-align: center; }
+
+
+/* ──────────────────────────────────────────────────────────────────
+   7. CARD-KOMPONENTE
+   Frosted-Glass-Karte mit Akzentrahmen für Kernaussagen.
+   .card        — die Karte selbst
+   .card-title  — kleines All-Caps-Heading innerhalb der Karte
+   .card-body   — Fließtext; <strong> für Hervorhebungen
+   .grid-3      — Drei-Spalten-Raster für mehrere Karten nebeneinander
+   ────────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--card); border: 1px solid var(--card-border);
+  border-radius: var(--radius); padding: 18px 20px;
+  backdrop-filter: blur(20px); box-shadow: var(--card-shadow);
+}
+.card-title {
+  font-size: 11px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.12em;
+  color: var(--accent); margin-bottom: 7px;
+}
+.card-body { font-size: 13px; color: var(--muted); line-height: 1.65; }
+.card-body strong { color: var(--text2); font-weight: 600; }
+
+.grid-3 {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 12px; width: 100%; max-width: 860px;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────
+   8. STAT-BOXEN  (große Kennzahl + kleines Label)
+   .stats-row  — Flex-Zeile, die mehrere .stat-Boxen aufnimmt
+   .stat       — einzelne Box (zentriert, Frosted-Glass)
+   .stat-num   — die große Zahl (fluid sizing, Akzentfarbe)
+   .stat-label — kleinere Beschriftung darunter
+   ────────────────────────────────────────────────────────────────── */
+.stats-row {
+  display: flex; gap: 12px; margin-top: 24px;
+  flex-wrap: wrap; justify-content: center;
+}
+.stat {
+  text-align: center; padding: 14px 20px;
+  background: var(--card); border: 1px solid var(--card-border);
+  border-radius: var(--radius); backdrop-filter: blur(20px);
+  box-shadow: var(--card-shadow); min-width: 100px;
+}
+.stat-num {
+  font-size: clamp(22px, 2.8vw, 34px);
+  font-weight: 300; color: var(--accent); letter-spacing: -0.03em;
+}
+.stat-label {
+  font-size: 11px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.12em; margin-top: 3px;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────
+   9. KONTRAST-GRID  (Alt-Ansatz vs. Neu-Ansatz)
+   Zwei Spalten nebeneinander: links ausgeblendet (Alt), rechts betont (Neu).
+   .contrast-grid        — das 2-Spalten-Raster
+   .contrast-card.old    — ausgegraut, "Vorher"-Spalte
+   .contrast-card.new    — leuchtend, "Nachher"-Spalte
+   .contrast-label       — Spaltenüberschrift
+   .contrast-item        — eine Zeile mit Punkt + Text
+   .contrast-dot         — kleiner Kreis vor dem Text
+   .contrast-text        — der Zeilentext
+   ────────────────────────────────────────────────────────────────── */
+.contrast-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 12px; width: 100%; max-width: 860px; margin-top: 6px;
+}
+.contrast-card {
+  border-radius: var(--radius); padding: 18px 20px;
+  backdrop-filter: blur(20px); box-shadow: var(--card-shadow);
+}
+.contrast-card.old { background: rgba(238, 233, 226, 0.75); border: 1px solid rgba(0, 0, 0, 0.08); }
+.contrast-card.new { background: var(--card); border: 1px solid var(--accent-border); }
+
+.contrast-label     { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.14em; margin-bottom: 10px; }
+.contrast-label.old { color: rgba(20, 18, 12, 0.35); }
+.contrast-label.new { color: var(--accent); }
+
+.contrast-item              { display: flex; align-items: flex-start; gap: 9px; margin-bottom: 8px; }
+.contrast-item:last-child   { margin-bottom: 0; }
+.contrast-dot               { width: 5px; height: 5px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+.contrast-dot.old           { background: rgba(20, 18, 12, 0.2); }
+.contrast-dot.new           { background: var(--accent); }
+.contrast-text              { font-size: 13px; line-height: 1.5; }
+.contrast-text.old          { color: rgba(20, 18, 12, 0.42); }
+.contrast-text.new          { color: var(--text2); font-weight: 600; }
+
+
+/* ──────────────────────────────────────────────────────────────────
+  10. METHOD-FLOW  (nummerierte horizontale Prozessschritte)
+   .method-flow      — die Zeile aller Schritte
+   .method-step      — ein Schritt als Karte; ::after erzeugt den →-Pfeil
+   .method-num       — "Step 01" Label oben in der Karte
+   .method-icon      — Emoji/Icon-Bereich
+   .method-name      — fetter Stufentitel
+   .method-desc      — Beschreibungstext
+   ────────────────────────────────────────────────────────────────── */
+.method-flow {
+  display: flex; align-items: stretch;
+  width: 100%; max-width: 820px; margin-top: 14px;
+}
+.method-step {
+  flex: 1; padding: 20px 16px; text-align: center;
+  background: var(--card); border: 1px solid var(--card-border);
+  border-radius: var(--radius); backdrop-filter: blur(20px);
+  box-shadow: var(--card-shadow); position: relative;
+}
+/* Pfeil-Connector zwischen den Schritten */
+.method-step:not(:last-child)::after {
+  content: '→'; position: absolute;
+  right: -18px; top: 50%; transform: translateY(-50%);
+  font-size: 13px; color: var(--accent); z-index: 2;
+}
+.method-step + .method-step { margin-left: 30px; }
+.method-num  { font-size: 11px; font-weight: 600; color: var(--accent); letter-spacing: 0.14em; text-transform: uppercase; margin-bottom: 8px; }
+.method-icon { font-size: 22px; margin-bottom: 8px; }
+.method-name { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.method-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+
+/* ──────────────────────────────────────────────────────────────────
+  11. PROOF ROWS  (Glaubwürdigkeitszeilen: Icon + Titel + Fließtext)
+   .proof-rows  — vertikaler Stack aller Zeilen
+   .proof-row   — eine Zeile (Icon links, Text rechts)
+   .proof-icon  — Emoji/Icon, flex-shrink:0 damit er nicht schrumpft
+   .proof-title — fette Überschrift der Zeile
+   .proof-body  — Fließtext; <strong> für Hervorhebungen
+   ────────────────────────────────────────────────────────────────── */
+.proof-rows { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 760px; }
+.proof-row {
+  display: flex; gap: 16px; align-items: flex-start; padding: 16px 18px;
+  background: var(--card); backdrop-filter: blur(20px);
+  border: 1px solid var(--card-border); border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+}
+.proof-icon  { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.proof-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+.proof-body  { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.proof-body strong { color: var(--text2); font-weight: 600; }
+
+
+/* ──────────────────────────────────────────────────────────────────
+  12. ROOT-CAUSE-BOX
+   Volle Breite, Karten-Stil — für Zusammenfassungen / hervorgehobene
+   Aussagen unterhalb eines Card-Grids.
+   ────────────────────────────────────────────────────────────────── */
+.root-cause {
+  margin-top: 16px; padding: 16px 20px;
+  background: var(--card); border: 1px solid var(--card-border);
+  border-radius: var(--radius); backdrop-filter: blur(20px);
+  box-shadow: var(--card-shadow); max-width: 860px; width: 100%;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────
+  13. BUTTONS
+   .btn-primary   — gefüllter Akzent-Button (primärer CTA)
+   .btn-secondary — Outline-Button (sekundärer CTA)
+   .cta-row       — Flex-Zeile, die beide Buttons aufnimmt
+   ────────────────────────────────────────────────────────────────── */
+.cta-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+
+.btn-primary {
+  padding: 13px 26px; background: var(--accent); color: #fff;
+  border-radius: 10px; font-weight: 600; font-size: 13px; letter-spacing: 0.03em;
+  cursor: pointer; box-shadow: 0 2px 14px rgba(62, 111, 163, 0.28);
+  border: none; font-family: inherit;
+}
+.btn-primary:hover { background: #335f8f; }
+
+.btn-secondary {
+  padding: 13px 26px; border: 1px solid var(--accent-border);
+  color: var(--accent); border-radius: 10px; font-size: 13px;
+  background: var(--card); backdrop-filter: blur(12px);
+  cursor: pointer; box-shadow: var(--card-shadow); font-family: inherit;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────
+  14. PROGRESS BAR & SLIDE-COUNTER
+   #progress       — 2px-Balken am unteren Viewport-Rand
+   #progress-fill  — der gefärbte Fortschrittsanteil
+   .slide-counter  — "2 / 5" Text unten rechts
+   ────────────────────────────────────────────────────────────────── */
+#progress {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: 2px; background: rgba(0, 0, 0, 0.07); z-index: 20;
+}
+#progress-fill { height: 100%; background: var(--accent); width: 0; }
+
+.slide-counter {
+  position: fixed; bottom: 12px; right: 20px;
+  font-size: 11px; color: var(--muted); z-index: 20;
+}
+
+
+/* ──────────────────────────────────────────────────────────────────
+  15. ARCHITECTURE ANIMATION  (arch-* Klassen)
+   Wird zusammen mit pe-design-system.js verwendet.
+   Die JS-Datei baut die DOM-Struktur auf und steuert alle GSAP-
+   Animationen. Das HTML muss folgende Elemente enthalten:
+
+     <div class="arch-wrap">
+       <div class="arch-prog">
+         <div class="arch-prog-fill" id="arch-pbar"></div>
+       </div>
+       <div class="arch-stage" id="arch-stage">
+         <div class="arch-phase-lbl" id="arch-plbl"></div>
+       </div>
+       <div class="arch-dots-row" id="arch-dots"></div>
+     </div>
+
+   .arch-wrap       — füllt die verfügbare Höhe im .slide-arch Container
+   .arch-prog       — 2px-Fortschrittsbalken oben (zeigt Verweildauer an)
+   .arch-prog-fill  — der gefärbte Fortschrittsanteil
+   .arch-stage      — der Bereich, in dem Phasen gerendert werden
+   .arch-view       — eine Phase (absolut positioniert im Stage)
+   .arch-phase-lbl  — zentriertes Label, das den Phasennamen anzeigt
+   .arch-layer      — eine horizontale Schicht-Zeile (L0–L3)
+   .arch-layer.hi   — Hervorgehobene Variante (Akzentfarbe, für Sub-Layer)
+   .arch-lid        — linkes Badge mit der Layer-ID (z.B. "L2a")
+   .arch-lbody      — rechter Inhaltsbereich mit Name + Untertitel
+   .arch-lname      — Layername (fett)
+   .arch-lsub       — Subtitel des Layers (kleiner Text)
+   .arch-stack      — vertikaler Stapel aus .arch-layer Elementen
+   .arch-dots-row   — Zeile der klickbaren Phasen-Indikatoren unten
+   .arch-dot        — einzelner Phasenindikator; .active = ausgefüllt
+   ────────────────────────────────────────────────────────────────── */
+.arch-wrap {
+  flex: 1; min-height: 0; width: 100%;
+  display: flex; flex-direction: column;
+  overflow: hidden; user-select: none;
+}
+.arch-prog      { height: 2px; background: rgba(62, 111, 163, 0.09); flex-shrink: 0; }
+.arch-prog-fill { height: 100%; background: var(--accent); width: 0; }
+.arch-stage     { flex: 1; position: relative; overflow: hidden; min-height: 0; }
+
+/* Jede Phase wird absolut positioniert und ist initial unsichtbar */
+.arch-view {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  padding: 14px 22px 8px; opacity: 0; overflow: hidden;
+}
+
+/* Kurzer Phasenname, erscheint oben mittig und faded dann aus */
+.arch-phase-lbl {
+  position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+  font-size: 9px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--accent); opacity: 0; white-space: nowrap;
+  pointer-events: none; z-index: 100;
+}
+
+/* Eine horizontale Schicht-Zeile */
+.arch-layer {
+  display: flex; align-items: stretch;
+  border: 1px solid var(--card-border); border-radius: 8px;
+  background: var(--card); box-shadow: 0 1px 14px rgba(62, 111, 163, 0.09);
+  overflow: hidden; width: 100%; flex-shrink: 0;
+}
+/* Hervorgehobene Variante — für Sub-Layer (L1a, L1b, L2a, L2b) */
+.arch-layer.hi { background: var(--hi); border-color: var(--accent-border); }
+
+/* Linkes Badge mit der Layer-Bezeichnung */
+.arch-lid {
+  width: 38px; display: flex; align-items: center; justify-content: center;
+  font-size: 9.5px; font-weight: 700; letter-spacing: 0.1em; color: var(--accent);
+  border-right: 1px solid var(--card-border);
+  background: rgba(62, 111, 163, 0.04); flex-shrink: 0; padding: 10px 0;
+}
+.arch-layer.hi .arch-lid {
+  background: rgba(62, 111, 163, 0.08);
+  border-right-color: var(--accent-border);
+}
+
+/* Rechter Inhaltsbereich mit Name und Untertitel */
+.arch-lbody { flex: 1; padding: 8px 12px; display: flex; flex-direction: column; justify-content: center; }
+.arch-lname { font-size: 12.5px; font-weight: 600; color: #14100c; line-height: 1.2; }
+.arch-layer.hi .arch-lname { color: var(--accent); }
+.arch-lsub  { font-size: 10px; color: var(--muted); margin-top: 2px; line-height: 1.3; }
+
+/* Vertikaler Stapel aus .arch-layer Elementen */
+.arch-stack { display: flex; flex-direction: column; gap: 5px; width: 100%; }
+
+/* Zeile der Phasen-Indikatoren unterhalb der Animation */
+.arch-dots-row {
+  display: flex; align-items: center; justify-content: center;
+  padding: 5px 0 9px; gap: 7px; flex-shrink: 0;
+}
+.arch-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: rgba(62, 111, 163, 0.18); cursor: pointer;
+  border: none; outline: none;
+  transition: background 0.25s, transform 0.25s;
+}
+.arch-dot.active { background: var(--accent); transform: scale(1.45); }
