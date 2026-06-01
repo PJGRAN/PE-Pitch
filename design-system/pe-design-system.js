@@ -39,7 +39,7 @@
    Hier anpassen, um Tempo und Beschriftung zu verändern.
    ────────────────────────────────────────────────────────────────── */
 const ARCH_DWELL  = [8000, 10400, 12000, 13000];
-const ARCH_LABELS = ['Platform Architecture', 'Layer Detail', 'Data Integration', 'Multi-Tenant Portfolio'];
+const ARCH_LABELS = ['Platform Layers', 'Layer Detail', 'Data Migration', 'Multi-Tenant'];
 
 
 /* ──────────────────────────────────────────────────────────────────
@@ -80,95 +80,87 @@ function aStk(arr) {
 
 
 /* ──────────────────────────────────────────────────────────────────
-   C. PHASE 1 — PLATTFORM-ÜBERBLICK
-   Zeigt die vier Haupt-Architektur-Layer (L3 → L0) als einfachen
-   Stapel. Layer animieren von unten nach oben ein, danach faden
-   die Untertitel-Zeilen ein.
+   C. PHASE 1 — PLATFORM LAYERS
+   Four main layers as a clean full-width stack. Layers enter from
+   the bottom one by one; subtitles fade in after.
    ────────────────────────────────────────────────────────────────── */
 function archP1() {
   const view = aEl('div', 'arch-view');
-
-  /* Die vier Haupt-Layer von oben nach unten */
   const layers = [
-    aLyr('L3', 'User Layer',           'Next.js · Google/Outlook · Claude Integration · Widgets'),
-    aLyr('L2', 'AI & Workflow Engine', 'Claude AI · Temporal.io · Reporting · Automation'),
-    aLyr('L1', 'Semantic Data Layer',  'Datenmodell · Business-Logik · KPI-Definitionen · Prisma ORM'),
-    aLyr('L0', 'Database / Data Lake', 'PostgreSQL · Neon Serverless · Location of data origin'),
+    aLyr('L3', 'Surface',                'Boards · workflows · forms · dashboards'),
+    aLyr('L2', 'Intelligence & Workflow', 'Claude AI · Temporal.io · automation'),
+    aLyr('L1', 'Domain & Semantic',       'Data model · KPIs · business logic'),
+    aLyr('L0', 'Database',               'PostgreSQL · Neon · data origin'),
   ];
   const wrap = aEl('div');
   wrap.style.cssText = 'width:100%;max-width:680px;';
   wrap.appendChild(aStk(layers));
   view.appendChild(wrap);
-
   return { view, animate() {
     const tl = gsap.timeline();
-    /* Layer fliegen von unten ein — reversed = unterster Layer zuerst */
-    tl.from([...layers].reverse(), {
-      opacity: 0, y: 22, scale: 0.97,
-      duration: 1.1, stagger: 0.2, ease: 'power3.out'
-    });
-    /* Untertitel faden nach den Layern ein */
-    tl.from(layers.map(l => l.querySelector('.arch-lsub')), {
-      opacity: 0, duration: 0.8, stagger: 0.14, ease: 'power2.out'
-    }, '-=0.7');
+    tl.from([...layers].reverse(), { opacity: 0, y: 22, scale: 0.97, duration: 1.0, stagger: 0.18, ease: 'power3.out' });
+    tl.from(layers.map(l => l.querySelector('.arch-lsub')), { opacity: 0, duration: 0.7, stagger: 0.12, ease: 'power2.out' }, '-=0.6');
   }};
 }
 
 
 /* ──────────────────────────────────────────────────────────────────
-   D. PHASE 2 — LAYER-DETAIL
-   Klappt L2 und L1 in ihre Sub-Layer auf (L2a/L2b, L1a/L1b).
-   Übergangs-Sequenz: Äußere Layer (L3, L0) erscheinen zuerst von
-   oben/unten — dann öffnet sich der Spalt, während die mittleren
-   Layer von der Mitte heraus skalieren.
+   D. PHASE 2 — LAYER DETAIL
+   L2 and L1 each split into two equal side-by-side columns. L3 and
+   L0 appear to stay in place from Phase 1, creating a seamless
+   "split" transition.
    ────────────────────────────────────────────────────────────────── */
 function archP2() {
   const view = aEl('div', 'arch-view');
 
-  /* Sechs Layer: äußere (L3, L0) + vier Sub-Layer in der Mitte */
-  const layers = [
-    aLyr('L3',  'User Layer',          'UI/UX · Google/Outlook · Claude Integration · Widgets'),
-    aLyr('L2b', 'Intelligence Layer',  'Claude AI · Reporting · Insights · LLM Interface',              true),
-    aLyr('L2a', 'Workflow Engine',     'Temporal.io · Process Logic · Approvals · Escalations',         true),
-    aLyr('L1b', 'Semantic Layer',      'KPI-Definitionen · Cube.dev · Business-Metriken · AI-Interface', true),
-    aLyr('L1a', 'Domain Model',        'Prisma ORM · Entitäten · Relationen · Customer · Order · GL',   true),
-    aLyr('L0',  'Database / Data Lake','PostgreSQL · Neon Serverless · Location of data origin'),
-  ];
+  const L3  = aLyr('L3',  'Surface',        'Boards · workflows · forms · dashboards');
+  const L2a = aLyr('L2a', 'Workflow Engine', 'Temporal.io · process logic · approvals', true);
+  const L2b = aLyr('L2b', 'Intelligence',   'Claude AI · LLM interface · reporting',   true);
+  const L1a = aLyr('L1a', 'Domain Model',   'Prisma ORM · entities · relations',       true);
+  const L1b = aLyr('L1b', 'Semantic Layer', 'KPIs · Cube.dev · AI interface',          true);
+  const L0  = aLyr('L0',  'Database',       'PostgreSQL · Neon · data origin');
 
-  /* Fußnote: erklärt die bewusste Trennung von L2a und L2b */
-  const note = aEl('div');
-  note.style.cssText = 'font-size:11px;color:var(--muted);font-style:italic;text-align:center;margin-top:7px;';
-  note.textContent = 'L2a (deterministisch) und L2b (probabilistisch) sind bewusst getrennt';
+  /* Creates a horizontal row of two equal-width layers */
+  function splitRow(a, b) {
+    const row = aEl('div');
+    row.style.cssText = 'display:flex;gap:5px;';
+    [a, b].forEach(l => { l.style.flex = '1'; row.appendChild(l); });
+    return row;
+  }
 
   const wrap = aEl('div');
-  wrap.style.cssText = 'width:100%;max-width:680px;display:flex;flex-direction:column;align-items:center;';
-  wrap.appendChild(aStk(layers));
-  wrap.appendChild(note);
-  view.appendChild(wrap);
+  wrap.style.cssText = 'width:100%;max-width:680px;display:flex;flex-direction:column;gap:5px;';
+  [L3, splitRow(L2a, L2b), splitRow(L1a, L1b), L0].forEach(el => wrap.appendChild(el));
+
+  /* Note explaining the intentional L2 separation */
+  const note = aEl('div');
+  note.style.cssText = 'font-size:11px;color:var(--muted);font-style:italic;text-align:center;margin-top:7px;';
+  note.textContent = 'L2a (deterministic workflow) and L2b (probabilistic AI) are intentionally separate layers.';
+
+  const outerWrap = aEl('div');
+  outerWrap.style.cssText = 'width:100%;max-width:680px;display:flex;flex-direction:column;align-items:center;';
+  outerWrap.appendChild(wrap); outerWrap.appendChild(note);
+  view.appendChild(outerWrap);
 
   return { view, animate() {
-    const mid = layers.slice(1, 5); /* L2b, L2a, L1b, L1a */
-
-    /* Mittlere Layer auf Höhe 0 setzen — sie sind initial nicht sichtbar */
-    gsap.set(mid, { scaleY: 0, opacity: 0, transformOrigin: 'center center' });
-
-    const tl = gsap.timeline({ delay: 0.5 });
-    /* Schritt 1: Äußere Layer gleiten von gegenüberliegenden Seiten ein */
-    tl.from(layers[0], { opacity: 0, y: -18, duration: 0.84, ease: 'power3.out' });
-    tl.from(layers[5], { opacity: 0, y:  18, duration: 0.84, ease: 'power3.out' }, '<');
-    /* Schritt 2: Spalt weitet sich — mittlere Layer skalieren nacheinander auf */
-    tl.to(mid, { scaleY: 1, opacity: 1, duration: 0.8, stagger: 0.18, ease: 'back.out(1.3)' }, '+=0.4');
-    tl.from(note, { opacity: 0, y: 8, duration: 0.76, ease: 'power2.out' }, '-=0.2');
+    /* L3 and L0 appear to hold from Phase 1 — no entrance animation needed */
+    gsap.set([L3, L0], { opacity: 1, y: 0 });
+    const tl = gsap.timeline({ delay: 0.18 });
+    /* L2 and L1 split outward from the center of the stack */
+    tl.from([L2a, L2b], { opacity: 0, scaleX: 0, transformOrigin: 'center', duration: 0.6, stagger: 0.06, ease: 'back.out(1.2)' });
+    tl.from([L1a, L1b], { opacity: 0, scaleX: 0, transformOrigin: 'center', duration: 0.6, stagger: 0.06, ease: 'back.out(1.2)' }, '-=0.35');
+    tl.from([L2a, L2b, L1a, L1b].map(l => l.querySelector('.arch-lsub')), { opacity: 0, duration: 0.4, stagger: 0.05, ease: 'power2.out' }, '-=0.15');
+    tl.from(note, { opacity: 0, y: 6, duration: 0.4, ease: 'power2.out' }, '-=0.1');
   }};
 }
 
 
 /* ──────────────────────────────────────────────────────────────────
-   E. PHASE 3 — DATEN-INTEGRATION
-   Zeigt den Plattform-Stack neben einer temporären Integration Layer
-   und den Legacy-Quell-Systemen (SAP, CRM, MES, PLM).
-   Bidirektionale Datenpunkte laufen entlang horizontaler Linien:
-     Quell-Systeme → Integration Layer → Plattform-Stack
+   E. PHASE 3 — DATA MIGRATION
+   The platform stack (with its split L2/L1 layout) compresses to the
+   left. The migration layer and legacy source systems appear from the
+   right. Data flow dots animate bidirectionally along the connection
+   lines to show data moving from sources into the platform.
    ────────────────────────────────────────────────────────────────── */
 function archP3() {
   const view = aEl('div', 'arch-view');
@@ -177,97 +169,74 @@ function archP3() {
   const row = aEl('div');
   row.style.cssText = 'display:flex;align-items:stretch;justify-content:center;width:100%;';
 
-  /* ── Linke Spalte: kompakter Plattform-Stack ── */
-  const stackLayers = [
-    aLyr('L3',  'User Layer',   null),
-    aLyr('L2b', 'Intelligence', null),
-    aLyr('L2a', 'Workflow',     null),
-    aLyr('L1b', 'Semantic',     null),
-    aLyr('L1a', 'Domain',       null, true),
-    aLyr('L0',  'Database',     null, true),
-  ];
+  /* Compact stack — same 2-column L2/L1 layout as Phase 2 */
+  function splitRow(a, b) {
+    const r = aEl('div'); r.style.cssText = 'display:flex;gap:3px;';
+    [a, b].forEach(l => { l.style.flex = '1'; r.appendChild(l); }); return r;
+  }
+  const L3  = aLyr('L3',  'Surface',      null);
+  const L2a = aLyr('L2a', 'Workflow',     null, true);
+  const L2b = aLyr('L2b', 'Intelligence', null, true);
+  const L1a = aLyr('L1a', 'Domain',       null, true);
+  const L1b = aLyr('L1b', 'Semantic',     null, true);
+  const L0  = aLyr('L0',  'Database',     null, true);
   const stackCol = aEl('div');
-  stackCol.style.cssText = 'flex:0 0 175px;display:flex;flex-direction:column;gap:4px;';
-  stackLayers.forEach(l => stackCol.appendChild(l));
+  stackCol.style.cssText = 'flex:0 0 175px;display:flex;flex-direction:column;gap:3px;';
+  [L3, splitRow(L2a, L2b), splitRow(L1a, L1b), L0].forEach(el => stackCol.appendChild(el));
 
-  /* ── Flow-Lane-Hilfsfunktion ─────────────────────────────────
-     Erstellt eine 38px breite Verbindungsspalte.
-     Pro Eintrag in yPositions: eine horizontale Linie + ein Punkt.
-     isReturn:false → vorwärts (Quelle → Stack), rechts→links
-     isReturn:true  → rückwärts (heller), links→rechts            */
+  /* Flow lane: horizontal line + animated dot per connection point */
   function makeFlowCol(yPositions) {
     const col = aEl('div');
     col.style.cssText = 'flex:0 0 38px;position:relative;align-self:stretch;overflow:visible;';
     const dots = [];
     yPositions.forEach(({ yPct, isReturn }) => {
-      /* Sichtbare horizontale Linie auf der Höhe der Verbindung */
       const line = aEl('div');
-      line.style.cssText =
-        `position:absolute;top:${yPct}%;left:0;right:0;height:1px;` +
-        `background:rgba(0,112,173,${isReturn ? '0.12' : '0.22'});margin-top:-0.5px;`;
+      line.style.cssText = `position:absolute;top:${yPct}%;left:0;right:0;height:1px;background:rgba(0,112,173,${isReturn ? '0.12' : '0.22'});margin-top:-0.5px;`;
       col.appendChild(line);
-      /* Beweglicher Punkt, der entlang der Linie animiert wird */
       const d = aEl('div');
-      const sz = isReturn ? 3 : 4;
-      const op = isReturn ? 0.45 : 0.82;
-      d.style.cssText =
-        `position:absolute;width:${sz}px;height:${sz}px;border-radius:50%;` +
-        `background:var(--accent);top:${yPct}%;margin-top:-${sz/2}px;` +
-        `left:50%;margin-left:-${sz/2}px;opacity:${op};`;
+      const sz = isReturn ? 3 : 4, op = isReturn ? 0.45 : 0.82;
+      d.style.cssText = `position:absolute;width:${sz}px;height:${sz}px;border-radius:50%;background:var(--accent);top:${yPct}%;margin-top:-${sz/2}px;left:50%;margin-left:-${sz/2}px;opacity:${op};`;
       col.appendChild(d);
       dots.push({ d, isReturn });
     });
     return { col, dots };
   }
 
-  /* Linker Datenfluss: Integration Layer → Stack
-     y-Positionen ~70% und ~84% entsprechen L1a und L0 im Stack */
+  /* Left flow connects to L1 (~62%) and L0 (~87%) in the compact stack */
   const flowL = makeFlowCol([
-    { yPct: 70, isReturn: false },
-    { yPct: 84, isReturn: false },
-    { yPct: 77, isReturn: false },
-    { yPct: 74, isReturn: true  },
+    { yPct: 62, isReturn: false }, { yPct: 87, isReturn: false },
+    { yPct: 74, isReturn: false }, { yPct: 68, isReturn: true },
   ]);
 
-  /* ── Mittlere Spalte: Integration / Migration Box ── */
+  /* Migration box */
   const mig = aEl('div');
-  mig.style.cssText =
-    'flex:0 0 138px;background:rgba(0,112,173,0.07);border:1px solid var(--accent-border);' +
-    'border-radius:10px;overflow:hidden;box-shadow:0 1px 12px rgba(0,112,173,0.1);align-self:center;';
+  mig.style.cssText = 'flex:0 0 138px;background:rgba(0,112,173,0.06);border:1px solid var(--accent-border);border-radius:10px;overflow:hidden;box-shadow:var(--card-shadow);align-self:center;';
   mig.innerHTML =
-    `<div style="padding:6px 11px;font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--accent);border-bottom:1px solid var(--accent-border);background:rgba(0,112,173,0.06);text-align:center;">Integration Layer</div>` +
-    `<div style="padding:5px 11px;font-size:11px;color:var(--muted);border-bottom:1px solid rgba(0,112,173,0.07);">Schema Mapping</div>` +
-    `<div style="padding:5px 11px;font-size:11px;color:var(--muted);border-bottom:1px solid rgba(0,112,173,0.07);">Data Transform</div>` +
+    `<div style="padding:6px 11px;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);border-bottom:1px solid var(--accent-border);background:rgba(0,112,173,0.04);text-align:center;">Migration</div>` +
+    `<div style="padding:5px 11px;font-size:11px;color:var(--muted);border-bottom:1px solid rgba(0,112,173,0.07);">Schema mapping</div>` +
+    `<div style="padding:5px 11px;font-size:11px;color:var(--muted);border-bottom:1px solid rgba(0,112,173,0.07);">Data transform</div>` +
     `<div style="padding:5px 11px;font-size:11px;color:var(--muted);border-bottom:1px solid rgba(0,112,173,0.07);">Validation</div>` +
-    `<div style="padding:5px 11px;font-size:11px;color:var(--muted);">Cutover Tooling</div>`;
+    `<div style="padding:5px 11px;font-size:11px;color:var(--muted);">Cutover tooling</div>`;
 
-  /* Rechter Datenfluss: Quell-Systeme → Integration
-     Vier Linien bei ~17/37/57/77% entsprechen den vier Quell-Blöcken */
+  /* Right flow connects to the four source systems */
   const flowR = makeFlowCol([
-    { yPct: 17, isReturn: false },
-    { yPct: 37, isReturn: false },
-    { yPct: 57, isReturn: false },
-    { yPct: 77, isReturn: false },
-    { yPct: 27, isReturn: true  },
-    { yPct: 67, isReturn: true  },
+    { yPct: 17, isReturn: false }, { yPct: 37, isReturn: false },
+    { yPct: 57, isReturn: false }, { yPct: 77, isReturn: false },
+    { yPct: 27, isReturn: true  }, { yPct: 67, isReturn: true  },
   ]);
 
-  /* ── Rechte Spalte: Legacy-Quell-Systeme ── */
+  /* Legacy source systems */
   const sources = [], srcCol = aEl('div');
-  srcCol.style.cssText = 'flex:0 0 120px;display:flex;flex-direction:column;gap:5px;';
+  srcCol.style.cssText = 'flex:0 0 110px;display:flex;flex-direction:column;gap:5px;';
   ['SAP / ERP', 'CRM', 'MES', 'PLM'].forEach(name => {
     const b = aEl('div');
-    b.style.cssText =
-      'background:var(--card);border:1px solid var(--card-border);border-radius:7px;' +
-      'padding:7px 10px;font-size:11px;font-weight:700;color:var(--text2);' +
-      'text-align:center;box-shadow:0 1px 8px rgba(0,112,173,0.07);';
+    b.style.cssText = 'background:var(--card);border:1px solid var(--card-border);border-radius:7px;padding:7px 10px;font-size:11px;font-weight:700;color:var(--text2);text-align:center;box-shadow:var(--card-shadow);';
     b.textContent = name; srcCol.appendChild(b); sources.push(b);
   });
 
-  /* Fußnote: Integration Layer ist temporär und nach Cutover abschaltbar */
   const note = aEl('div');
   note.style.cssText = 'font-size:11px;color:var(--muted);font-style:italic;text-align:center;width:100%;';
-  note.textContent = 'Temporäre Onboarding-Infrastruktur — nach Cutover abschaltbar';
+  note.textContent = 'Temporary onboarding infrastructure — can be shut down after cutover.';
 
   row.appendChild(stackCol); row.appendChild(flowL.col); row.appendChild(mig);
   row.appendChild(flowR.col); row.appendChild(srcCol);
@@ -275,19 +244,16 @@ function archP3() {
   view.appendChild(outer);
 
   return { view, animate() {
-    const tl = gsap.timeline({ delay: 0.5 });
-    /* Eingangsanimation: Stack von links, Integration + Quellen von rechts */
-    tl.from(stackLayers, { opacity: 0, x: -14, duration: 0.9,  stagger: 0.12, ease: 'power3.out' });
-    tl.from(mig,         { opacity: 0, x:  28, duration: 0.96, ease: 'power3.out' }, '-=0.4');
-    tl.from(sources,     { opacity: 0, x:  22, duration: 0.76, stagger: 0.16, ease: 'power3.out' }, '-=0.4');
-    tl.from(note,        { opacity: 0, y:   7, duration: 0.76, ease: 'power2.out' });
+    const tl = gsap.timeline({ delay: 0.2 });
+    /* Stack slides in from left — appears to compress from Phase 2 */
+    tl.from(stackCol, { opacity: 0, x: -20, duration: 0.55, ease: 'power3.out' });
+    /* Migration box and source systems appear from the right */
+    tl.from(mig,     { opacity: 0, x: 32, duration: 0.5,  ease: 'power3.out' }, '-=0.3');
+    tl.from(sources, { opacity: 0, x: 22, duration: 0.4, stagger: 0.08, ease: 'power3.out' }, '-=0.3');
+    tl.from(note,    { opacity: 0, y: 7,  duration: 0.4,  ease: 'power2.out' });
 
-    /* Bidirektionaler Datenfluss — startet nach der Eingangsanimation
-       OVR: Pixel-Überschuss über den Spaltenrand (für sauberes Ein-/Ausfahren)
-       Vorwärts-Punkte (isReturn:false) fahren rechts→links
-       Rückwärts-Punkte (isReturn:true)  fahren links→rechts, heller */
-    const OVR    = 22;
-    const FSTART = 3.0;
+    /* Bidirectional data flow dots */
+    const OVR = 22, FSTART = 2.2;
     [...flowL.dots, ...flowR.dots].forEach(({ d, isReturn }, fi) => {
       const fromX = isReturn ? -OVR : OVR;
       const toX   = isReturn ?  OVR : -OVR;
@@ -300,135 +266,120 @@ function archP3() {
 
 
 /* ──────────────────────────────────────────────────────────────────
-   F. PHASE 4 — MULTI-TENANT PORTFOLIO
-   Zeigt die vollständige Multi-Tenant-Architektur:
-   - PE-Cockpit oben (gemeinsamer User Layer + AI & Reporting)
-   - Drei Tenant-Spalten (L2a/L2b isoliert pro Portfolio-Unternehmen)
-   - Gemeinsame L1 + L0 am unteren Rand (Shared Database)
-   Animierte Punkte steigen von jedem Tenant zum PE-Cockpit auf
-   und visualisieren den aufwärts gerichteten Datenfluss.
+   F. PHASE 4 — MULTI-TENANT
+   PE Cockpit sits at the top (L3 + L2, shared across all portfolios).
+   Below: Portfolios 1 and 2 run in a shared deployment with a common
+   L0 database. Portfolio 3 (CMMC) runs on a fully isolated instance.
+   Data flow dots rise from each portfolio up to the PE Cockpit.
    ────────────────────────────────────────────────────────────────── */
 function archP4() {
   const view = aEl('div', 'arch-view');
-  view.style.cssText = 'align-items:flex-start;justify-content:center;overflow:hidden;padding:10px 18px 8px;';
+  view.style.cssText = 'align-items:flex-start;justify-content:center;overflow:hidden;padding:8px 14px;';
   const outer = aEl('div');
-  outer.style.cssText = 'width:100%;max-width:780px;display:flex;flex-direction:column;gap:0;';
+  outer.style.cssText = 'width:100%;max-width:820px;display:flex;flex-direction:column;gap:0;';
 
-  /* ── PE-Cockpit: gemeinsamer Reporting- und KI-Layer für das Portfolio ── */
-  const cockpit = aEl('div');
-  cockpit.style.cssText =
-    'border:2px solid var(--accent);border-radius:10px;overflow:hidden;' +
-    'background:rgba(210,233,245,0.88);box-shadow:0 2px 22px rgba(0,112,173,0.18);';
+  /* ── PE Cockpit ───────────────────────────────────────────────────── */
+  const cockpitSection = aEl('div');
+  cockpitSection.style.cssText = 'display:flex;flex-direction:column;gap:4px;';
+  const cockpitLabel = aEl('div');
+  cockpitLabel.style.cssText = 'font-size:11px;font-weight:500;letter-spacing:0.10em;text-transform:uppercase;color:var(--accent);text-align:center;margin-bottom:3px;';
+  cockpitLabel.textContent = 'PE Cockpit';
+  const cpL3 = aLyr('L3', 'Portfolio Interface',    'KPI dashboard · deal pipeline · portfolio view');
+  const cpL2 = aLyr('L2', 'Portfolio Intelligence', 'Claude AI · cross-company analytics · alerts');
+  cockpitSection.appendChild(cockpitLabel);
+  cockpitSection.appendChild(cpL3);
+  cockpitSection.appendChild(cpL2);
 
-  /* Kopfzeile mit Titel */
-  const cpHdr = aEl('div');
-  cpHdr.style.cssText = 'padding:5px 14px;background:var(--accent);display:flex;align-items:center;gap:10px;';
-  cpHdr.innerHTML =
-    '<span style="font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#fff;">PE-Cockpit</span>' +
-    '<span style="font-size:11px;color:rgba(255,255,255,0.72);font-weight:300;">Portfolio Visibility Layer</span>';
-
-  /* Zwei Sub-Layer im Cockpit: User Layer + AI & Reporting */
-  const cpBody = aEl('div');
-  cpBody.style.cssText = 'display:flex;gap:8px;padding:7px 12px 9px;';
-  const cpLayers = [];
-  [['User Layer',     'Next.js · Google/Outlook · Claude Integration · Mobile'],
-   ['AI & Reporting', 'Claude AI · Portfolio KPIs · Cross-company Benchmarks · Alerts']
-  ].forEach(([name, sub]) => {
-    const l = aEl('div');
-    l.style.cssText =
-      'flex:1;background:rgba(255,255,255,0.9);border:1px solid var(--accent-border);' +
-      'border-radius:7px;padding:6px 10px;';
-    l.innerHTML =
-      `<div style="font-size:11px;font-weight:700;color:var(--accent);">${name}</div>` +
-      `<div style="font-size:11px;color:var(--muted);margin-top:2px;line-height:1.4;">${sub}</div>`;
-    cpBody.appendChild(l); cpLayers.push(l);
-  });
-  cockpit.appendChild(cpHdr); cockpit.appendChild(cpBody);
-
-  /* ── Verbindungszone: vertikale Linien + aufsteigende Punkte ──
-     Jede Linie verbindet eine Tenant-Spalte mit dem PE-Cockpit.
-     Punkte steigen auf und faden aus — visualisieren Datenstrom. */
+  /* ── Connector zone with upward-flowing dots ──────────────────────── */
   const connZone = aEl('div');
-  connZone.style.cssText = 'display:flex;gap:6px;height:20px;';
+  connZone.style.cssText = 'display:flex;gap:8px;height:18px;';
   const connDots = [];
-  for (let i = 0; i < 3; i++) {
+  /* Three connector columns — loosely aligned with P1, P2, P3 centers */
+  [1, 1, 0.7].forEach((flex, i) => {
     const c = aEl('div');
-    c.style.cssText = 'flex:1;position:relative;display:flex;justify-content:center;';
-    /* Vertikale Verbindungslinie */
+    c.style.cssText = `flex:${flex};position:relative;display:flex;justify-content:center;`;
     const line = aEl('div');
     line.style.cssText = 'width:1px;height:100%;background:rgba(0,112,173,0.25);';
     c.appendChild(line);
-    /* Zwei Punkte pro Spalte, versetzt für kontinuierlichen Strom */
     [0, 1].forEach(j => {
       const d = aEl('div');
-      d.style.cssText =
-        'position:absolute;width:4px;height:4px;border-radius:50%;background:var(--accent);' +
-        'left:50%;margin-left:-2px;bottom:0;opacity:0.85;';
+      d.style.cssText = 'position:absolute;width:4px;height:4px;border-radius:50%;background:var(--accent);left:50%;margin-left:-2px;bottom:0;opacity:0.85;';
       c.appendChild(d);
       connDots.push({ d, col: i, j });
     });
     connZone.appendChild(c);
-  }
-
-  /* ── Tenant-Spalten: L2b (Intelligence) + L2a (Workflow) pro Unternehmen ──
-     Jeder Tenant hat seinen eigenen isolierten Applikations-Layer. */
-  const tenantsWrap = aEl('div');
-  tenantsWrap.style.cssText = 'display:flex;gap:6px;';
-  const tenantCols = [];
-  ['Portfolio A', 'Portfolio B', 'Portfolio C'].forEach(name => {
-    const col = aEl('div');
-    col.style.cssText =
-      'flex:1;border:1px solid var(--card-border);border-radius:8px;overflow:hidden;' +
-      'background:var(--card);box-shadow:0 1px 10px rgba(0,112,173,0.07);';
-    const hdr = aEl('div');
-    hdr.style.cssText =
-      'padding:4px 8px;background:rgba(0,112,173,0.05);border-bottom:1px solid var(--card-border);' +
-      'font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);text-align:center;';
-    hdr.textContent = name;
-    const inner = aEl('div');
-    inner.style.cssText = 'display:flex;flex-direction:column;gap:4px;padding:6px;';
-    [['L2b','Intelligence'],['L2a','Workflow']].forEach(([lid, lname]) => inner.appendChild(aLyr(lid, lname, null, true)));
-    col.appendChild(hdr); col.appendChild(inner);
-    tenantsWrap.appendChild(col); tenantCols.push(col);
   });
 
-  /* ── Shared Layer: L1 + L0 spannen über ALLE Tenants ──
-     Alle Portfolio-Unternehmen teilen diese zwei Layer via Row-Level-Security. */
-  const sharedWrap = aEl('div');
-  sharedWrap.style.cssText = 'margin-top:6px;display:flex;flex-direction:column;gap:5px;';
-  const sharedLayers = [
-    aLyr('L1', 'Shared Domain Model',        'Prisma ORM · Entitäten · Relationen · Row-Level-Security per Tenant', true),
-    aLyr('L0', 'Shared Database / Data Lake', 'PostgreSQL · Neon Serverless · Mandantentrennung via RLS · Multi-tenant', true),
-  ];
-  sharedLayers.forEach(l => sharedWrap.appendChild(l));
+  /* ── Portfolio stack builder ──────────────────────────────────────── */
+  /* Each portfolio has L3, a split L2 row, a split L1 row (no L0 — handled separately) */
+  function mkStack(label) {
+    const wrap = aEl('div');
+    wrap.style.cssText = 'flex:1;display:flex;flex-direction:column;gap:3px;';
+    const hdr = aEl('div');
+    hdr.style.cssText = 'font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;color:var(--accent);text-align:center;margin-bottom:2px;';
+    hdr.textContent = label;
+    const L3  = aLyr('L3',  'Surface',      null);
+    const L2a = aLyr('L2a', 'Workflow',     null, true);
+    const L2b = aLyr('L2b', 'Intelligence', null, true);
+    const L1a = aLyr('L1a', 'Domain',       null, true);
+    const L1b = aLyr('L1b', 'Semantic',     null, true);
+    function sr(a, b) {
+      const r = aEl('div'); r.style.cssText = 'display:flex;gap:3px;';
+      [a, b].forEach(l => { l.style.flex = '1'; r.appendChild(l); }); return r;
+    }
+    [hdr, L3, sr(L2a, L2b), sr(L1a, L1b)].forEach(el => wrap.appendChild(el));
+    return wrap;
+  }
 
-  /* Fußnote: erklärt die Isolierungs-/Sharing-Grenze */
+  const p1Wrap = mkStack('Portfolio 1');
+  const p2Wrap = mkStack('Portfolio 2');
+  const p3Wrap = mkStack('Portfolio 3');
+
+  /* Shared L0 for Portfolios 1 and 2 */
+  const sharedL0 = aLyr('L0', 'Shared Database', 'PostgreSQL · multi-tenant · row-level security', true);
+
+  /* Isolated L0 for Portfolio 3 (CMMC) */
+  const p3L0 = aLyr('L0', 'Isolated Database', 'Dedicated instance · CMMC compliance', true);
+
+  /* Shared deployment box — P1 + P2 side by side, shared L0 below */
+  const sharedBox = aEl('div');
+  sharedBox.style.cssText = 'flex:2;border:1px solid var(--card-border);border-radius:10px;padding:7px;display:flex;flex-direction:column;gap:5px;box-shadow:var(--card-shadow);';
+  const p12Row = aEl('div');
+  p12Row.style.cssText = 'display:flex;gap:6px;';
+  p12Row.appendChild(p1Wrap); p12Row.appendChild(p2Wrap);
+  sharedBox.appendChild(p12Row); sharedBox.appendChild(sharedL0);
+
+  /* Isolated deployment box — P3 with its own L0 */
+  const p3Box = aEl('div');
+  p3Box.style.cssText = 'flex:1;border:1px solid var(--card-border);border-radius:10px;padding:7px;display:flex;flex-direction:column;gap:5px;box-shadow:var(--card-shadow);';
+  p3Box.appendChild(p3Wrap); p3Box.appendChild(p3L0);
+
+  const tenantsRow = aEl('div');
+  tenantsRow.style.cssText = 'display:flex;gap:8px;';
+  tenantsRow.appendChild(sharedBox); tenantsRow.appendChild(p3Box);
+
   const note = aEl('div');
   note.style.cssText = 'font-size:11px;color:var(--muted);font-style:italic;text-align:center;margin-top:4px;';
-  note.textContent = 'L2a/L2b sind tenant-isoliert — L1 und L0 werden shared betrieben';
+  note.textContent = 'Portfolios 1 and 2 share L0. Portfolio 3 runs on an isolated database instance.';
 
-  outer.appendChild(cockpit); outer.appendChild(connZone);
-  outer.appendChild(tenantsWrap); outer.appendChild(sharedWrap); outer.appendChild(note);
+  outer.appendChild(cockpitSection);
+  outer.appendChild(connZone);
+  outer.appendChild(tenantsRow);
+  outer.appendChild(note);
   view.appendChild(outer);
 
   return { view, animate() {
-    const tl = gsap.timeline({ delay: 0.5 });
-    /* PE-Cockpit fällt von oben herein */
-    tl.from(cockpit,      { opacity: 0, y: -22, scale: 0.97, duration: 1.04, ease: 'power3.out' });
-    tl.from(cpLayers,     { opacity: 0, scale: 0.94, duration: 0.72, stagger: 0.2,  ease: 'back.out(1.5)' }, '-=0.5');
-    /* Tenant-Spalten fächern von unten auf */
-    tl.from(tenantCols,   { opacity: 0, y: 20, scale: 0.96, duration: 0.88, stagger: 0.18, ease: 'power3.out' }, '-=0.2');
-    /* Shared Layer steigen von unten auf */
-    tl.from(sharedLayers, { opacity: 0, y: 14, duration: 0.8, stagger: 0.2, ease: 'power3.out' }, '-=0.4');
-    tl.from(note,         { opacity: 0, duration: 0.6, ease: 'power2.out' }, '-=0.1');
-
-    /* Kontinuierlicher Aufwärtsstrom: Punkte steigen von Tenants zum PE-Cockpit */
+    const tl = gsap.timeline({ delay: 0.2 });
+    /* PE Cockpit descends from above */
+    tl.from(cockpitSection, { opacity: 0, y: -20, scale: 0.97, duration: 0.9, ease: 'power3.out' });
+    /* Shared deployment box and isolated box rise from below */
+    tl.from(sharedBox, { opacity: 0, y: 18, scale: 0.97, duration: 0.8, ease: 'power3.out' }, '-=0.45');
+    tl.from(p3Box,     { opacity: 0, y: 18, scale: 0.97, duration: 0.8, ease: 'power3.out' }, '-=0.65');
+    tl.from(note,      { opacity: 0, duration: 0.4, ease: 'power2.out' }, '-=0.1');
+    /* Continuous upward data flow from each portfolio to the PE Cockpit */
     connDots.forEach(({ d, col, j }) => {
-      const delay = 3.0 + col * 0.56 + j * 1.1;
-      gsap.fromTo(d,
-        { y: 0,   opacity: 0.85 },
-        { y: -20, opacity: 0, ease: 'power1.in', duration: 1.3, repeat: -1, delay }
-      );
+      const delay = 1.6 + col * 0.56 + j * 1.1;
+      gsap.fromTo(d, { y: 0, opacity: 0.85 }, { y: -18, opacity: 0, ease: 'power1.in', duration: 1.3, repeat: -1, delay });
     });
   }};
 }
@@ -464,10 +415,10 @@ function archGoTo(idx) {
 
   if (archActiveView) {
     const old = archActiveView;
-    gsap.to(old, { opacity: 0, duration: 0.56, ease: 'power2.in',
+    gsap.to(old, { opacity: 0, duration: 0.18, ease: 'power2.in',
       onComplete: () => {
         if (archStageEl.contains(old)) archStageEl.removeChild(old);
-        gsap.to(view, { opacity: 1, duration: 0.44, ease: 'power2.out' });
+        gsap.to(view, { opacity: 1, duration: 0.14, ease: 'power2.out' });
       }
     });
   } else {
